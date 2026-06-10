@@ -1,28 +1,42 @@
-import { useEffect, useState } from 'react'
-
-/** Build a wa.me deep link with a pre-filled message. */
-export function waLink(rawNumber, text) {
-  const num = String(rawNumber || '').replace(/[^\d]/g, '')
-  const query = text ? `?text=${encodeURIComponent(text)}` : ''
-  return `https://wa.me/${num}${query}`
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,jsx}'],
+  theme: {
+    extend: {
+      colors: {
+        ink: '#050507',
+        panel: '#0B0B11',
+        surface: '#101018',
+        cream: '#F4F2EC',
+        champagne: {
+          DEFAULT: '#D8C5A0',
+          light: '#EBDFC4',
+          dark: '#B49E72',
+        },
+        violet: '#8B7CF6',
+        electric: '#5D8BFF',
+        muted: '#9A95A6',
+      },
+      fontFamily: {
+        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      boxShadow: {
+        glow: '0 0 40px -8px rgba(216, 197, 160, 0.35)',
+        'glow-violet': '0 0 50px -10px rgba(139, 124, 246, 0.4)',
+        card: '0 24px 60px -24px rgba(0,0,0,0.7)',
+      },
+      animation: {
+        'spin-slow': 'spin 14s linear infinite',
+        marquee: 'marquee 36s linear infinite',
+      },
+      keyframes: {
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        },
+      },
+    },
+  },
+  plugins: [],
 }
-
-/** Media-query hook — used to slim down 3D effects on small screens. */
-export function useMediaQuery(query) {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return window.matchMedia(query).matches
-  })
-
-  useEffect(() => {
-    const mq = window.matchMedia(query)
-    const handler = (e) => setMatches(e.matches)
-    mq.addEventListener('change', handler)
-    setMatches(mq.matches)
-    return () => mq.removeEventListener('change', handler)
-  }, [query])
-
-  return matches
-}
-
-export const useIsMobile = () => useMediaQuery('(max-width: 768px)')
