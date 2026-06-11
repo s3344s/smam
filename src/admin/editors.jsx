@@ -210,3 +210,251 @@ export function ContactEditor({ value, onChange }) {
     </div>
   )
 }
+
+/* ---------- Brand / Logo ---------- */
+
+export function BrandEditor({ value, onChange }) {
+  const set = (key) => (v) => onChange({ ...value, [key]: v })
+  const readImage = (file) => {
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => onChange({ ...value, logoImage: String(reader.result || '') })
+    reader.readAsDataURL(file)
+  }
+
+  return (
+    <div>
+      <SectionTitle title="Logo və brend" desc="Sol yuxarıdakı logo buradan dəyişir. Şəkil yükləsəniz mətn logosu əvəzinə həmin şəkil görünəcək." />
+      <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label="Logo mətni" value={value.logoText} onChange={set('logoText')} />
+          <Field label="Alt yazı" value={value.logoSubtext} onChange={set('logoSubtext')} hint="Məs: Agency. Boş saxlasanız görünməyəcək." />
+        </div>
+        <Field label="Logo alt etiketi" value={value.logoAlt} onChange={set('logoAlt')} />
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <label className="label-dark">Logo şəkli yüklə</label>
+          <input
+            type="file"
+            accept="image/*"
+            className="input-dark file:mr-4 file:rounded-lg file:border-0 file:bg-champagne file:px-3 file:py-2 file:font-display file:text-xs file:font-semibold file:text-ink"
+            onChange={(e) => readImage(e.target.files?.[0])}
+          />
+          <Field label="və ya logo şəkil linki / data URL" value={value.logoImage} onChange={set('logoImage')} hint="Boş saxlasanız CULTA mətn logosu görünəcək." />
+          {value.logoImage && (
+            <div className="mt-4 flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/20 p-4">
+              <img src={value.logoImage} alt="Logo preview" className="max-h-16 max-w-[220px] object-contain" />
+              <button type="button" onClick={() => set('logoImage')('')} className="rounded-lg border border-red-400/30 px-3 py-2 text-xs text-red-300 hover:bg-red-400/10">Şəkli sil</button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Header / Navigation ---------- */
+
+export function NavigationEditor({ value, onChange }) {
+  const set = (key) => (v) => onChange({ ...value, [key]: v })
+  const setItem = (i, patch) => onChange({ ...value, items: updateAt(value.items || [], i, patch) })
+
+  return (
+    <div>
+      <SectionTitle title="Header menyusu" desc="Şəkildə işarələnən header hissələrinin saytda görünüb-görünməməsini və adlarını buradan tənzimləyin." />
+      <div className="space-y-5">
+        <EditorCard title="Header düymələri və kontrollar">
+          <div className="grid gap-4 md:grid-cols-3">
+            <Field label="Qiymət düyməsi" value={value.quoteLabel} onChange={set('quoteLabel')} />
+            <Field label="WhatsApp düyməsi" value={value.whatsappLabel} onChange={set('whatsappLabel')} />
+            <Field label="Mobil WhatsApp düyməsi" value={value.mobileWhatsappLabel} onChange={set('mobileWhatsappLabel')} />
+          </div>
+          <Field label="Instagram adı" value={value.instagramLabel} onChange={set('instagramLabel')} />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <Toggle label="Dil seçimi görünsün" checked={value.showLanguage !== false} onChange={(v) => set('showLanguage')(v)} />
+            <Toggle label="Dark/Light görünsün" checked={value.showTheme !== false} onChange={(v) => set('showTheme')(v)} />
+            <Toggle label="Qiymət düyməsi görünsün" checked={value.showQuote !== false} onChange={(v) => set('showQuote')(v)} />
+            <Toggle label="Instagram görünsün" checked={value.showInstagram !== false} onChange={(v) => set('showInstagram')(v)} />
+            <Toggle label="WhatsApp görünsün" checked={value.showWhatsapp !== false} onChange={(v) => set('showWhatsapp')(v)} />
+          </div>
+        </EditorCard>
+
+        {(value.items || []).map((item, i) => (
+          <EditorCard key={item.id || i} title={`Menyu linki ${i + 1}`} onDelete={() => onChange({ ...value, items: removeAt(value.items || [], i) })}>
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field label="Ad" value={item.label} onChange={(v) => setItem(i, { label: v })} />
+              <Field label="Link / anchor" value={item.href} onChange={(v) => setItem(i, { href: v })} hint="Məs: #xidmetler" />
+              <Field label="ID" value={item.id} onChange={(v) => setItem(i, { id: v })} />
+            </div>
+            <Toggle label="Header və footerdə görünsün" checked={item.visible !== false} onChange={(v) => setItem(i, { visible: v })} />
+          </EditorCard>
+        ))}
+        <AddButton label="Yeni menyu linki əlavə et" onClick={() => onChange({ ...value, items: [...(value.items || []), { id: `custom-${Date.now()}`, label: 'Yeni link', href: '#', visible: true }] })} />
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Section headings / site copy ---------- */
+
+const COPY_GROUP_LABELS = {
+  about: 'Haqqımızda başlıqları',
+  services: 'Xidmətlər bölməsi başlıqları',
+  pricing: 'Paketlər və kalkulyator başlıqları',
+  why: 'Niyə biz başlıqları',
+  portfolio: 'Portfolio başlıqları',
+  process: 'Proses başlıqları',
+  industries: 'Sahələr başlıqları',
+  testimonials: 'Rəylər başlıqları',
+  faq: 'FAQ başlıqları',
+  contact: 'Əlaqə formu yazıları',
+  footer: 'Footer başlıqları',
+}
+
+export function SectionCopyEditor({ value, onChange }) {
+  const setGroupField = (group, key, next) => onChange({ ...value, [group]: { ...(value[group] || {}), [key]: next } })
+
+  return (
+    <div>
+      <SectionTitle title="Saytdakı bütün başlıqlar" desc="Bölmə etiketləri, böyük başlıqlar, alt mətnlər, form etiketləri və modal başlıqları buradan dəyişir." />
+      <div className="space-y-5">
+        {Object.entries(value || {}).map(([group, fields]) => (
+          <EditorCard key={group} title={COPY_GROUP_LABELS[group] || group}>
+            <div className="grid gap-4 md:grid-cols-2">
+              {Object.entries(fields || {}).map(([key, val]) => (
+                String(val).length > 90 ? (
+                  <TextArea key={key} label={key} rows={3} value={val} onChange={(v) => setGroupField(group, key, v)} />
+                ) : (
+                  <Field key={key} label={key} value={val} onChange={(v) => setGroupField(group, key, v)} />
+                )
+              ))}
+            </div>
+          </EditorCard>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ---------- About ---------- */
+
+export function AboutEditor({ value, onChange }) {
+  const set = (key) => (v) => onChange({ ...value, [key]: v })
+  return (
+    <div>
+      <SectionTitle title="Haqqımızda" desc="Haqqımızda mətni və kartları." />
+      <div className="space-y-4">
+        <Field label="Böyük başlıq" value={value.title} onChange={set('title')} />
+        <TextArea label="Mətn" rows={4} value={value.text} onChange={set('text')} />
+        {(value.cards || []).map((card, i) => (
+          <EditorCard key={i} title={`Kart ${i + 1}`} onDelete={() => onChange({ ...value, cards: removeAt(value.cards || [], i) })}>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Başlıq" value={card.title} onChange={(v) => onChange({ ...value, cards: updateAt(value.cards || [], i, { title: v }) })} />
+              <SelectField label="İkon" value={card.icon} options={SERVICE_ICON_OPTIONS} onChange={(v) => onChange({ ...value, cards: updateAt(value.cards || [], i, { icon: v }) })} />
+            </div>
+            <TextArea label="Təsvir" rows={2} value={card.desc} onChange={(v) => onChange({ ...value, cards: updateAt(value.cards || [], i, { desc: v }) })} />
+          </EditorCard>
+        ))}
+        <AddButton label="Yeni kart əlavə et" onClick={() => onChange({ ...value, cards: [...(value.cards || []), { icon: 'spark', title: 'Yeni kart', desc: 'Qısa təsvir.' }] })} />
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Why Us ---------- */
+
+export function WhyUsEditor({ value, onChange }) {
+  return (
+    <div>
+      <SectionTitle title="Niyə biz" desc="Kartlar və müqayisə bloku." />
+      <div className="space-y-4">
+        {(value.cards || []).map((card, i) => (
+          <EditorCard key={i} title={`Kart ${i + 1}`} onDelete={() => onChange({ ...value, cards: removeAt(value.cards || [], i) })}>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Başlıq" value={card.title} onChange={(v) => onChange({ ...value, cards: updateAt(value.cards || [], i, { title: v }) })} />
+              <SelectField label="İkon" value={card.icon} options={SERVICE_ICON_OPTIONS} onChange={(v) => onChange({ ...value, cards: updateAt(value.cards || [], i, { icon: v }) })} />
+            </div>
+            <TextArea label="Təsvir" rows={2} value={card.desc} onChange={(v) => onChange({ ...value, cards: updateAt(value.cards || [], i, { desc: v }) })} />
+          </EditorCard>
+        ))}
+        <AddButton label="Yeni kart əlavə et" onClick={() => onChange({ ...value, cards: [...(value.cards || []), { icon: 'spark', title: 'Yeni üstünlük', desc: 'Qısa təsvir.' }] })} />
+        <EditorCard title="Müqayisə bloku">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field label="Sol başlıq" value={value.comparison?.ordinaryTitle} onChange={(v) => onChange({ ...value, comparison: { ...(value.comparison || {}), ordinaryTitle: v } })} />
+            <Field label="Sağ başlıq" value={value.comparison?.cultaTitle} onChange={(v) => onChange({ ...value, comparison: { ...(value.comparison || {}), cultaTitle: v } })} />
+          </div>
+          <TextArea label="Sol siyahı (hər sətirdə bir)" rows={4} value={(value.comparison?.ordinary || []).join('\n')} onChange={(v) => onChange({ ...value, comparison: { ...(value.comparison || {}), ordinary: v.split('\n').filter(Boolean) } })} />
+          <TextArea label="Sağ siyahı (hər sətirdə bir)" rows={4} value={(value.comparison?.culta || []).join('\n')} onChange={(v) => onChange({ ...value, comparison: { ...(value.comparison || {}), culta: v.split('\n').filter(Boolean) } })} />
+        </EditorCard>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Portfolio ---------- */
+
+export function PortfolioEditor({ value, onChange }) {
+  return (
+    <div>
+      <SectionTitle title="Portfolio" desc="Portfolio kartlarındakı bütün mətnlər." />
+      <div className="space-y-4">
+        {value.map((item, i) => (
+          <EditorCard key={i} title={`Portfolio ${i + 1}`} onDelete={() => onChange(removeAt(value, i))}>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Tip / sahə" value={item.type} onChange={(v) => onChange(updateAt(value, i, { type: v }))} />
+              <SelectField label="Rəng aksenti" value={item.accent} options={['champagne', 'violet', 'electric']} onChange={(v) => onChange(updateAt(value, i, { accent: v }))} />
+            </div>
+            <Field label="Hədəf" value={item.goal} onChange={(v) => onChange(updateAt(value, i, { goal: v }))} />
+            <Field label="Xidmət" value={item.service} onChange={(v) => onChange(updateAt(value, i, { service: v }))} />
+            <Field label="Nəticə" value={item.result} onChange={(v) => onChange(updateAt(value, i, { result: v }))} />
+          </EditorCard>
+        ))}
+        <AddButton label="Yeni portfolio əlavə et" onClick={() => onChange([...value, { type: 'Yeni sahə', goal: 'Hədəf', service: 'Xidmət', result: 'Nəticə', accent: 'champagne' }])} />
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Industries ---------- */
+
+export function IndustriesEditor({ value, onChange }) {
+  return (
+    <div>
+      <SectionTitle title="Sahələr" desc="Hərəkətli sahə etiketləri. Hər sətirdə bir sahə yazın." />
+      <TextArea rows={12} label="Sahələr" value={(value || []).join('\n')} onChange={(v) => onChange(v.split('\n').filter((line) => line.trim() !== ''))} />
+    </div>
+  )
+}
+
+/* ---------- Testimonials ---------- */
+
+export function TestimonialsEditor({ value, onChange }) {
+  return (
+    <div>
+      <SectionTitle title="Müştəri rəyləri" desc="Rəy mətni, ad və vəzifə/sahə tam dəyişdirilə bilər." />
+      <div className="space-y-4">
+        {value.map((item, i) => (
+          <EditorCard key={i} title={`Rəy ${i + 1}`} onDelete={() => onChange(removeAt(value, i))}>
+            <TextArea label="Rəy mətni" rows={4} value={item.quote} onChange={(v) => onChange(updateAt(value, i, { quote: v }))} />
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Ad Soyad" value={item.name} onChange={(v) => onChange(updateAt(value, i, { name: v }))} />
+              <Field label="Vəzifə / biznes" value={item.role} onChange={(v) => onChange(updateAt(value, i, { role: v }))} />
+            </div>
+          </EditorCard>
+        ))}
+        <AddButton label="Yeni rəy əlavə et" onClick={() => onChange([...value, { quote: 'Yeni rəy mətni.', name: 'Ad Soyad', role: 'Vəzifə / biznes' }])} />
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Footer ---------- */
+
+export function FooterEditor({ value, onChange }) {
+  const set = (key) => (v) => onChange({ ...value, [key]: v })
+  return (
+    <div>
+      <SectionTitle title="Footer" desc="Saytın ən aşağı hissəsindəki mətn." />
+      <TextArea label="Footer sloqanı" rows={3} value={value.tagline} onChange={set('tagline')} />
+    </div>
+  )
+}

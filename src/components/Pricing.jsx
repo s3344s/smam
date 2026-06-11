@@ -109,7 +109,12 @@ function flattenAddons(groups) {
   return groups.flatMap((g) => g.items)
 }
 
-function CalculatorModal({ open, onClose, selected, packages, setSelected, contact, t, lang }) {
+function copyForTitle(copy, titleKey, t) {
+  const key = String(titleKey).split('.').pop()
+  return copy?.[key] || t(titleKey)
+}
+
+function CalculatorModal({ open, onClose, selected, packages, setSelected, contact, t, lang, copy = {} }) {
   const groups = ADDONS[lang] || ADDONS.az
   const addons = flattenAddons(groups)
   const [counts, setCounts] = useState({})
@@ -133,6 +138,8 @@ function CalculatorModal({ open, onClose, selected, packages, setSelected, conta
     }
   }, [open, selected?.id])
 
+  if (!selected) return null
+
   const base = priceNumber(selected?.price)
   const chosenAddons = addons
     .map((a) => {
@@ -144,21 +151,22 @@ function CalculatorModal({ open, onClose, selected, packages, setSelected, conta
   const total = base + addonsTotal
 
   const inc = (id, delta) => setCounts((c) => ({ ...c, [id]: Math.max(0, (c[id] || 0) + delta) }))
-
+  const basePackageLabel = t('pricing.basePackage')
+  const addonsLabel = t('pricing.addons')
+  const monthlyLabel = copy.monthly || t('pricing.monthly')
   const message = [
     'Salam, CULTA Media Agency.',
-    `${t('pricing.basePackage')}: ${selected?.name || '-'} (${selected?.price || '-'})`,
-    chosenAddons.length ? `${t('pricing.addons')}:` : '',
-    ...chosenAddons.map((a) => `- ${a.label} x${a.qty}: ${formatPrice(a.subtotal)}`),
-    `${t('pricing.monthly')}: ${selected?.price?.match(/\d/) ? formatPrice(total) : selected?.price || '-'}`,
-    'Qiymət təklifi almaq istəyirəm.',
+    `${basePackageLabel}: ${selected?.name || '-'} (${selected?.price || '-'})`,
+    chosenAddons.length ? `${addonsLabel}:` : '',
+    ...chosenAddons.map((a) => `- ${a.label} × ${a.qty}: ${formatPrice(a.subtotal)}`),
+    `${monthlyLabel}: ${selected?.price?.match(/\d/) ? formatPrice(total) : selected?.price || '-'}`,
   ].filter(Boolean).join('\n')
 
   return (
     <AnimatePresence>
-      {open && selected && (
+      {open && (
         <motion.div
-          className="fixed inset-0 z-[90] overflow-y-auto bg-black/75 px-4 py-10 backdrop-blur-xl"
+          className="fixed inset-0 z-[90] overflow-y-auto bg-black/75 px-3 py-6 backdrop-blur-xl sm:px-4 sm:py-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -169,33 +177,35 @@ function CalculatorModal({ open, onClose, selected, packages, setSelected, conta
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-ink/95 p-5 shadow-card md:p-8"
+            className="relative mx-auto max-w-6xl rounded-[1.5rem] border border-white/10 bg-ink/95 p-4 shadow-card sm:rounded-[2rem] md:p-8"
           >
             <button
               type="button"
               onClick={onClose}
               aria-label={t('pricing.close')}
-              className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-cream transition hover:border-white/25"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-cream transition hover:border-white/25 md:right-5 md:top-5 md:h-10 md:w-10"
             >
-              <Icon name="close" className="h-4.5 w-4.5" />
+              <Icon name="close" className="h-4 w-4" />
             </button>
 
-            <div className="max-w-2xl pr-12">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 font-display text-[10px] font-semibold uppercase tracking-[0.25em] text-champagne">
+            <div className="max-w-2xl pr-10">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 font-display text-[10px] font-semibold uppercase tracking-[0.22em] text-champagne">
                 <Icon name="calculator" className="h-3.5 w-3.5" />
-                {t('pricing.modalEyebrow')}
+                {copy.modalEyebrow || t('pricing.modalEyebrow')}
               </span>
-              <h3 className="mt-5 font-display text-4xl font-black leading-[0.95] tracking-tight text-cream md:text-6xl">
-                {t('pricing.modalTitle')}
+              <h3 className="mt-5 font-display text-3xl font-black leading-[0.98] tracking-tight text-cream sm:text-4xl md:text-6xl">
+                {copy.modalTitle || t('pricing.modalTitle')}
               </h3>
-              <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted md:text-base">{t('pricing.modalSubtitle')}</p>
+              <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted md:text-base">
+                {copy.modalSubtitle || t('pricing.modalSubtitle')}
+              </p>
             </div>
 
-            <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_320px]">
+            <div className="mt-8 grid gap-6 lg:mt-10 lg:grid-cols-[1fr_320px]">
               <div className="space-y-6">
                 <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025]">
                   <div className="border-b border-white/8 px-5 py-4 font-display text-[11px] font-bold uppercase tracking-[0.22em] text-cream">
-                    {t('pricing.step1')}
+                    {copy.step1 || t('pricing.step1')}
                   </div>
                   <div className="grid gap-3 p-4 sm:grid-cols-2 xl:grid-cols-4">
                     {packages.map((pkg) => {
@@ -233,12 +243,14 @@ function CalculatorModal({ open, onClose, selected, packages, setSelected, conta
 
                 <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025]">
                   <div className="border-b border-white/8 px-5 py-4 font-display text-[11px] font-bold uppercase tracking-[0.22em] text-cream">
-                    {t('pricing.step2')}
+                    {copy.step2 || t('pricing.step2')}
                   </div>
                   <div className="space-y-7 p-4 md:p-5">
                     {groups.map((group) => (
                       <div key={group.titleKey}>
-                        <h4 className="mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-cream">{t(group.titleKey)}</h4>
+                        <h4 className="mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-cream">
+                          {copyForTitle(copy, group.titleKey, t)}
+                        </h4>
                         <div className="grid gap-3 md:grid-cols-2">
                           {group.items.map((a) => {
                             const qty = counts[a.id] || 0
@@ -291,7 +303,7 @@ function CalculatorModal({ open, onClose, selected, packages, setSelected, conta
               <aside className="h-fit rounded-3xl border border-white/10 bg-white/[0.045] p-5 lg:sticky lg:top-6">
                 <div className="mb-5 flex items-center gap-2 font-display text-[11px] font-bold uppercase tracking-[0.22em] text-muted">
                   <Icon name="report" className="h-4 w-4" />
-                  {t('pricing.summary')}
+                  {copy.summary || t('pricing.summary')}
                 </div>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between gap-4 text-muted">
@@ -306,11 +318,11 @@ function CalculatorModal({ open, onClose, selected, packages, setSelected, conta
                   ))}
                 </div>
                 <div className="my-5 h-px bg-white/10" />
-                <p className="font-display text-[11px] font-bold uppercase tracking-[0.22em] text-muted">{t('pricing.monthly')}</p>
+                <p className="font-display text-[11px] font-bold uppercase tracking-[0.22em] text-muted">{monthlyLabel}</p>
                 <p className="mt-1 font-display text-3xl font-black text-cream">{selected.price?.match(/\d/) ? formatPrice(total) : selected.price}</p>
                 <p className="mt-1 text-xs text-muted">{t('pricing.roi')}</p>
                 <a href={waLink(contact.whatsappRaw, message)} target="_blank" rel="noreferrer" className="btn-primary mt-6 w-full !px-4 !py-3 !text-[13px]">
-                  {t('pricing.request')}
+                  {copy.request || t('pricing.request')}
                 </a>
               </aside>
             </div>
@@ -324,6 +336,7 @@ function CalculatorModal({ open, onClose, selected, packages, setSelected, conta
 export default function Pricing() {
   const { siteData: data, t, lang } = useSiteData()
   const isMobile = useIsMobile()
+  const copy = data.sectionCopy?.pricing || {}
   const [modalOpen, setModalOpen] = useState(false)
   const [selected, setSelected] = useState(data.pricing.find((p) => p.highlighted) || data.pricing[0])
 
@@ -351,16 +364,16 @@ export default function Pricing() {
 
       <div className="container-x relative">
         <SectionHeading
-          eyebrow={t('pricing.eyebrow')}
-          title={t('pricing.title')}
-          subtitle={t('pricing.subtitle')}
+          eyebrow={copy.eyebrow || t('pricing.eyebrow')}
+          title={copy.title || t('pricing.title')}
+          subtitle={copy.subtitle || t('pricing.subtitle')}
         />
 
         <div className="mt-16 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {data.pricing.map((pkg, i) => (
             <Reveal key={pkg.id || i} delay={i * 0.09} y={36}>
               <div
-                className={`relative flex h-full flex-col rounded-3xl p-7 transition-all duration-500 hover:-translate-y-2 ${
+                className={`relative flex h-full flex-col rounded-3xl p-6 transition-all duration-500 hover:-translate-y-2 sm:p-7 ${
                   pkg.highlighted
                     ? 'border border-champagne/40 bg-gradient-to-b from-champagne/[0.1] via-white/[0.04] to-white/[0.02] shadow-glow'
                     : 'glass hover:border-white/25'
@@ -380,7 +393,7 @@ export default function Pricing() {
                 <div className="mt-5 flex items-baseline gap-2">
                   <span
                     className={`font-display font-bold tracking-tight ${
-                      pkg.price.length > 9 ? 'text-2xl' : 'text-[2.1rem]'
+                      String(pkg.price || '').length > 9 ? 'text-2xl' : 'text-[2.1rem]'
                     } ${pkg.highlighted ? 'text-champagne' : 'text-cream'}`}
                   >
                     {pkg.price}
@@ -394,7 +407,7 @@ export default function Pricing() {
 
                 <ul className="flex flex-1 flex-col gap-3">
                   {pkg.features.map((feature, fi) => (
-                    <li key={fi} className="flex items-start gap-2.5 text-sm text-cream/85">
+                    <li key={fi} className="flex items-start gap-2.5 text-sm text-cream/90">
                       <span
                         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
                           pkg.highlighted ? 'bg-champagne/15 text-champagne' : 'bg-white/[0.06] text-champagne/80'
@@ -412,7 +425,7 @@ export default function Pricing() {
                   onClick={() => openCalculator(pkg)}
                   className={`${pkg.highlighted ? 'btn-primary' : 'btn-ghost'} mt-8 w-full !text-[13px]`}
                 >
-                  {t('pricing.choose')}
+                  {copy.choose || t('pricing.choose')}
                   <Icon name="plus" className="h-4 w-4" />
                 </button>
               </div>
@@ -434,6 +447,7 @@ export default function Pricing() {
         contact={data.contact}
         t={t}
         lang={lang}
+        copy={copy}
       />
     </section>
   )

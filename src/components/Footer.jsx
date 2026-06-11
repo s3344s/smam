@@ -3,20 +3,12 @@ import { waLink } from '../lib/utils'
 import { Logo } from './ui'
 import Icon from './Icon'
 
-const MENU = [
-  { key: 'nav.about', href: '#haqqimizda' },
-  { key: 'nav.services', href: '#xidmetler' },
-  { key: 'nav.pricing', href: '#paketler' },
-  { key: 'nav.process', href: '#proses' },
-  { key: 'nav.why', href: '#niye-biz' },
-  { key: 'nav.portfolio', href: '#portfolio' },
-  { key: 'nav.faq', href: '#faq' },
-  { key: 'nav.contact', href: '#elaqe' },
-]
-
 export default function Footer() {
   const { siteData: data, t } = useSiteData()
   const { contact, footer } = data
+  const nav = data.navigation || {}
+  const copy = data.sectionCopy?.footer || {}
+  const menu = (nav.items || []).filter((item) => item.visible !== false)
   const year = new Date().getFullYear()
 
   return (
@@ -25,7 +17,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-5 pb-10 pt-16 md:px-8">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Logo size="md" />
+            <Logo size="md" brand={data.brand} />
             <p className="mt-5 max-w-sm leading-relaxed text-muted">{footer.tagline}</p>
             <div className="mt-6 flex items-center gap-3">
               <a
@@ -57,12 +49,12 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-4">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{t('footer.menu')}</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{copy.menu || t('footer.menu')}</h3>
             <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3">
-              {MENU.map((m) => (
-                <li key={m.href}>
-                  <a href={m.href} className="text-sm text-cream/70 transition-colors hover:text-cream">
-                    {t(m.key)}
+              {menu.map((m) => (
+                <li key={m.id || m.href}>
+                  <a href={m.href} className="text-sm text-cream/80 transition-colors hover:text-cream">
+                    {m.label}
                   </a>
                 </li>
               ))}
@@ -70,16 +62,16 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-3">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{t('footer.contact')}</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{copy.contact || t('footer.contact')}</h3>
             <ul className="mt-5 space-y-3 text-sm text-cream/70">
               <li>
-                <span className="block text-xs text-muted">{t('footer.phone')}</span>
+                <span className="block text-xs text-muted">{copy.phone || t('footer.phone')}</span>
                 <a href={`tel:${contact.phoneRaw}`} className="transition-colors hover:text-cream">
                   {contact.phoneDisplay}
                 </a>
               </li>
               <li>
-                <span className="block text-xs text-muted">{t('footer.whatsapp')}</span>
+                <span className="block text-xs text-muted">{copy.whatsapp || t('footer.whatsapp')}</span>
                 <a
                   href={waLink(contact.whatsappRaw, 'Salam, CULTA Media Agency.')}
                   target="_blank"
@@ -90,7 +82,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <span className="block text-xs text-muted">{t('footer.instagram')}</span>
+                <span className="block text-xs text-muted">{copy.instagram || t('footer.instagram')}</span>
                 <a
                   href={contact.instagramUrl}
                   target="_blank"
@@ -105,7 +97,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/8 pt-7 text-xs text-muted md:flex-row">
-          <span>© {year} CULTA Media Agency. {t('footer.rights')}</span>
+          <span>© {year} CULTA Media Agency. {copy.rights || t('footer.rights')}</span>
         </div>
       </div>
     </footer>

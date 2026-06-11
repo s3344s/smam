@@ -271,17 +271,17 @@ body {
 /* ---------- brighter dark typography ---------- */
 .theme-dark .text-muted,
 .theme-dark [class~='text-muted'] {
-  color: #c7c1cf !important;
+  color: #e4dfeb !important;
 }
 .theme-dark [class*='text-muted/'] {
-  color: rgba(199, 193, 207, 0.82) !important;
+  color: rgba(228, 223, 235, 0.9) !important;
 }
 .theme-dark [class*='text-cream/70'],
 .theme-dark [class*='text-cream/80'],
 .theme-dark [class*='text-cream/82'],
 .theme-dark [class*='text-cream/85'],
 .theme-dark [class*='text-cream/90'] {
-  color: rgba(255, 253, 247, 0.9) !important;
+  color: rgba(255, 253, 247, 0.96) !important;
 }
 
 /* ---------- light mode ---------- */
@@ -351,4 +351,57 @@ body {
 }
 .theme-light ::-webkit-scrollbar-thumb {
   background: #cfc7b8;
+}
+
+
+/* ---------- extra responsive polish ---------- */
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.theme-dark .text-cream,
+.theme-dark [class~='text-cream'] {
+  text-shadow: 0 0 18px rgba(255, 253, 247, 0.06);
+}
+
+@media (max-width: 1024px) {
+  .container-x {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    scroll-padding-top: 78px;
+  }
+  .section-pad {
+    padding-top: 4.5rem !important;
+    padding-bottom: 4.5rem !important;
+  }
+  .eyebrow {
+    letter-spacing: 0.22em !important;
+    font-size: 10px !important;
+  }
+  .btn {
+    width: 100%;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+  .btn-ghost,
+  .btn-primary,
+  .btn-whatsapp {
+    min-height: 48px;
+  }
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: anywhere;
+  }
+  .grid-bg {
+    background-size: 48px 48px;
+  }
 }

@@ -5,6 +5,7 @@ import { useSiteData } from '../data/SiteDataContext'
 export default function WhyUs() {
   const { siteData: data, t } = useSiteData()
   const { whyUs } = data
+  const copy = data.sectionCopy?.why || {}
 
   return (
     <section id="niye-biz" className="section-pad relative overflow-hidden bg-panel/40">
@@ -14,9 +15,9 @@ export default function WhyUs() {
       />
       <div className="container-x relative">
         <SectionHeading
-          eyebrow={t('why.eyebrow')}
-          title={t('why.title')}
-          subtitle={t('why.subtitle')}
+          eyebrow={copy.eyebrow || t('why.eyebrow')}
+          title={copy.title || t('why.title')}
+          subtitle={copy.subtitle || t('why.subtitle')}
         />
 
         <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

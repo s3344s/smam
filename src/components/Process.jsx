@@ -6,6 +6,7 @@ import { useSiteData } from '../data/SiteDataContext'
 export default function Process() {
   const { siteData: data, t } = useSiteData()
   const ref = useRef(null)
+  const copy = data.sectionCopy?.process || {}
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -21,9 +22,9 @@ export default function Process() {
       />
       <div className="container-x relative">
         <SectionHeading
-          eyebrow={t('process.eyebrow')}
-          title={t('process.title')}
-          subtitle={t('process.subtitle')}
+          eyebrow={copy.eyebrow || t('process.eyebrow')}
+          title={copy.title || t('process.title')}
+          subtitle={copy.subtitle || t('process.subtitle')}
         />
 
         <div ref={ref} className="relative mx-auto mt-20 max-w-4xl">
@@ -53,7 +54,7 @@ export default function Process() {
                     <div className={`flex-1 md:w-[calc(50%-3.5rem)] md:flex-none ${left ? 'md:mr-auto md:pr-0 md:text-right' : 'md:ml-auto'}`}>
                       <div className="glass inline-block w-full rounded-2xl p-6 transition-all duration-500 hover:border-champagne/30 hover:bg-white/[0.06] md:p-7">
                         <span className="font-display text-[11px] font-medium uppercase tracking-[0.3em] text-champagne/70">
-                          {t('common.step')} {String(i + 1).padStart(2, '0')}
+                          {copy.stepLabel || t('common.step')} {String(i + 1).padStart(2, '0')}
                         </span>
                         <h3 className="mt-2 font-display text-xl font-semibold text-cream">{step.title}</h3>
                         <p className="mt-2.5 text-sm leading-relaxed text-muted">{step.desc}</p>

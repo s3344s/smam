@@ -25,9 +25,11 @@ function ServiceCard({ service, i }) {
 
 export default function Services() {
   const { siteData: data, t } = useSiteData()
+  const copy = data.sectionCopy?.services || {}
+  const visibleCount = Math.max(1, Number(copy.visibleCount) || 4)
   const [expanded, setExpanded] = useState(false)
-  const visible = expanded ? data.services : data.services.slice(0, 4)
-  const hiddenCount = Math.max(data.services.length - 4, 0)
+  const visible = expanded ? data.services : data.services.slice(0, visibleCount)
+  const hiddenCount = Math.max(data.services.length - visibleCount, 0)
 
   return (
     <section id="xidmetler" className="section-pad relative overflow-hidden bg-panel/40">
@@ -37,9 +39,9 @@ export default function Services() {
       />
       <div className="container-x relative">
         <SectionHeading
-          eyebrow={t('services.eyebrow')}
-          title={t('services.title')}
-          subtitle={t('services.subtitle')}
+          eyebrow={copy.eyebrow || t('services.eyebrow')}
+          title={copy.title || t('services.title')}
+          subtitle={copy.subtitle || t('services.subtitle')}
         />
 
         <motion.div layout className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -51,7 +53,7 @@ export default function Services() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.32, delay: expanded && i >= 4 ? (i % 4) * 0.04 : 0 }}
+                transition={{ duration: 0.32, delay: expanded && i >= visibleCount ? (i % 4) * 0.04 : 0 }}
               >
                 <ServiceCard service={service} i={i} />
               </motion.div>
@@ -64,11 +66,11 @@ export default function Services() {
             <div className="mt-10 flex flex-col items-center gap-3">
               {!expanded && (
                 <span className="text-sm text-muted">
-                  +{hiddenCount} {t('services.hiddenText')}
+                  +{hiddenCount} {copy.hiddenText || t('services.hiddenText')}
                 </span>
               )}
               <button type="button" onClick={() => setExpanded((v) => !v)} className="btn-ghost min-w-[220px]">
-                {expanded ? t('services.lessButton') : t('services.moreButton')}
+                {expanded ? (copy.lessButton || t('services.lessButton')) : (copy.moreButton || t('services.moreButton'))}
                 <Icon name={expanded ? 'minus' : 'plus'} className="h-4 w-4" />
               </button>
             </div>

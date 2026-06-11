@@ -23,6 +23,7 @@ function Row({ items, reverse = false }) {
 
 export default function Industries() {
   const { siteData: data, t } = useSiteData()
+  const copy = data.sectionCopy?.industries || {}
   const list = data.industries
   const half = Math.ceil(list.length / 2)
   const rowA = list.slice(0, half)
@@ -33,9 +34,9 @@ export default function Industries() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <SectionHeading
-          eyebrow={t('industries.eyebrow')}
-          title={t('industries.title')}
-          subtitle={t('industries.subtitle')}
+          eyebrow={copy.eyebrow || t('industries.eyebrow')}
+          title={copy.title || t('industries.title')}
+          subtitle={copy.subtitle || t('industries.subtitle')}
         />
       </div>
 
@@ -46,7 +47,7 @@ export default function Industries() {
 
       <div className="mx-auto mt-10 flex max-w-7xl items-center justify-center gap-2 px-5 text-sm text-muted md:px-8">
         <Icon name="spark" className="h-4 w-4 text-champagne" />
-        <span>{t('industries.note')}</span>
+        <span>{copy.note || t('industries.note')}</span>
       </div>
     </section>
   )

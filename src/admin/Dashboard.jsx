@@ -6,23 +6,41 @@ import { DEFAULT_DATA } from '../data/defaultData'
 import { Logo } from '../components/ui'
 import Icon from '../components/Icon'
 import {
+  BrandEditor,
+  NavigationEditor,
+  SectionCopyEditor,
   HeroEditor,
   StatsEditor,
+  AboutEditor,
   ServicesEditor,
   PricingEditor,
+  WhyUsEditor,
+  PortfolioEditor,
   ProcessEditor,
+  IndustriesEditor,
+  TestimonialsEditor,
   FaqEditor,
   ContactEditor,
+  FooterEditor,
 } from './editors'
 
 const TABS = [
+  { id: 'brand', label: 'Logo', icon: 'gem' },
+  { id: 'navigation', label: 'Header menyu', icon: 'layers' },
+  { id: 'sectionCopy', label: 'Başlıqlar', icon: 'copy' },
   { id: 'hero', label: 'Hero', icon: 'spark' },
   { id: 'stats', label: 'Statistika', icon: 'growth' },
+  { id: 'about', label: 'Haqqımızda', icon: 'team' },
   { id: 'services', label: 'Xidmətlər', icon: 'layers' },
   { id: 'pricing', label: 'Paketlər', icon: 'gem' },
+  { id: 'whyUs', label: 'Niyə biz', icon: 'system' },
+  { id: 'portfolio', label: 'Portfolio', icon: 'report' },
   { id: 'process', label: 'Proses', icon: 'radar' },
+  { id: 'industries', label: 'Sahələr', icon: 'target' },
+  { id: 'testimonials', label: 'Rəylər', icon: 'star' },
   { id: 'faq', label: 'FAQ', icon: 'idea' },
   { id: 'contact', label: 'Əlaqə', icon: 'phone' },
+  { id: 'footer', label: 'Footer', icon: 'web' },
 ]
 
 const EDITABLE_KEYS = TABS.map((t) => t.id)
@@ -66,13 +84,22 @@ export default function Dashboard({ onLogout }) {
   const setSection = (key) => (value) => setDraft((d) => ({ ...d, [key]: value }))
 
   const editors = {
+    brand: <BrandEditor value={draft.brand} onChange={setSection('brand')} />,
+    navigation: <NavigationEditor value={draft.navigation} onChange={setSection('navigation')} />,
+    sectionCopy: <SectionCopyEditor value={draft.sectionCopy} onChange={setSection('sectionCopy')} />,
     hero: <HeroEditor value={draft.hero} onChange={setSection('hero')} />,
     stats: <StatsEditor value={draft.stats} onChange={setSection('stats')} />,
+    about: <AboutEditor value={draft.about} onChange={setSection('about')} />,
     services: <ServicesEditor value={draft.services} onChange={setSection('services')} />,
     pricing: <PricingEditor value={draft.pricing} onChange={setSection('pricing')} />,
+    whyUs: <WhyUsEditor value={draft.whyUs} onChange={setSection('whyUs')} />,
+    portfolio: <PortfolioEditor value={draft.portfolio} onChange={setSection('portfolio')} />,
     process: <ProcessEditor value={draft.process} onChange={setSection('process')} />,
+    industries: <IndustriesEditor value={draft.industries} onChange={setSection('industries')} />,
+    testimonials: <TestimonialsEditor value={draft.testimonials} onChange={setSection('testimonials')} />,
     faq: <FaqEditor value={draft.faq} onChange={setSection('faq')} />,
     contact: <ContactEditor value={draft.contact} onChange={setSection('contact')} />,
+    footer: <FooterEditor value={draft.footer} onChange={setSection('footer')} />,
   }
 
   const TabList = ({ onPick }) => (
@@ -114,7 +141,7 @@ export default function Dashboard({ onLogout }) {
             >
               <Icon name={menuOpen ? 'close' : 'menu'} className="h-4.5 w-4.5" />
             </button>
-            <Logo size="sm" withAgency={false} />
+            <Logo size="sm" withAgency={false} brand={data.brand} />
             <span className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted sm:block">
               İdarəetmə paneli
             </span>
@@ -167,7 +194,7 @@ export default function Dashboard({ onLogout }) {
 
       <div className="relative mx-auto flex max-w-7xl gap-8 px-5 py-8 md:px-8">
         {/* Sidebar */}
-        <aside className="sticky top-24 hidden h-fit w-60 shrink-0 lg:block">
+        <aside className="sticky top-24 hidden max-h-[calc(100vh-7rem)] w-60 shrink-0 overflow-y-auto pr-1 lg:block">
           <TabList />
           <div className="mt-8 border-t border-white/8 pt-6">
             <button

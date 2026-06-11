@@ -56,14 +56,15 @@ function FaqItem({ item, open, onToggle, index }) {
 export default function FAQ() {
   const { siteData: data, t } = useSiteData()
   const [openIndex, setOpenIndex] = useState(0)
+  const copy = data.sectionCopy?.faq || {}
 
   return (
     <section id="faq" className="relative scroll-mt-24 py-24 md:py-32">
       <div className="mx-auto max-w-4xl px-5 md:px-8">
         <SectionHeading
-          eyebrow={t('faq.eyebrow')}
-          title={t('faq.title')}
-          subtitle={t('faq.subtitle')}
+          eyebrow={copy.eyebrow || t('faq.eyebrow')}
+          title={copy.title || t('faq.title')}
+          subtitle={copy.subtitle || t('faq.subtitle')}
         />
 
         <div className="mt-14 space-y-4">

@@ -24,6 +24,7 @@ const ACCENTS = {
 export default function Portfolio() {
   const { siteData: data, t } = useSiteData()
   const trackRef = useRef(null)
+  const copy = data.sectionCopy?.portfolio || {}
 
   const scrollBy = (dir) => {
     trackRef.current?.scrollBy({ left: dir * 400, behavior: 'smooth' })
@@ -35,21 +36,21 @@ export default function Portfolio() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading
             align="left"
-            eyebrow={t('portfolio.eyebrow')}
-            title={t('portfolio.title')}
-            subtitle={t('portfolio.subtitle')}
+            eyebrow={copy.eyebrow || t('portfolio.eyebrow')}
+            title={copy.title || t('portfolio.title')}
+            subtitle={copy.subtitle || t('portfolio.subtitle')}
           />
           <Reveal delay={0.2} className="hidden gap-2.5 md:flex">
             <button
               onClick={() => scrollBy(-1)}
-              aria-label={t('portfolio.prev')}
+              aria-label={copy.prev || t('portfolio.prev')}
               className="flex h-12 w-12 items-center justify-center rounded-full border border-white/15 text-cream transition-all hover:border-champagne/50 hover:bg-white/[0.05]"
             >
               <Icon name="arrowRight" className="h-5 w-5 rotate-180" />
             </button>
             <button
               onClick={() => scrollBy(1)}
-              aria-label={t('portfolio.next')}
+              aria-label={copy.next || t('portfolio.next')}
               className="flex h-12 w-12 items-center justify-center rounded-full border border-white/15 text-cream transition-all hover:border-champagne/50 hover:bg-white/[0.05]"
             >
               <Icon name="arrowRight" className="h-5 w-5" />
@@ -84,11 +85,11 @@ export default function Portfolio() {
 
                 <div className="flex flex-1 flex-col gap-4 p-6">
                   <div>
-                    <span className="label-dark !mb-1">{t('portfolio.goal')}</span>
+                    <span className="label-dark !mb-1">{copy.goal || t('portfolio.goal')}</span>
                     <p className="text-sm leading-relaxed text-cream/90">{item.goal}</p>
                   </div>
                   <div>
-                    <span className="label-dark !mb-1">{t('portfolio.service')}</span>
+                    <span className="label-dark !mb-1">{copy.service || t('portfolio.service')}</span>
                     <p className="text-sm text-muted">{item.service}</p>
                   </div>
                   <div className="mt-auto flex items-center gap-2.5 border-t border-white/[0.07] pt-4">

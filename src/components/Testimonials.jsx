@@ -15,6 +15,7 @@ function initials(name, fallback) {
 
 export default function Testimonials() {
   const { siteData: data, t } = useSiteData()
+  const copy = data.sectionCopy?.testimonials || {}
 
   return (
     <section className="relative overflow-hidden py-24 md:py-32">
@@ -23,12 +24,12 @@ export default function Testimonials() {
         <Reveal>
           <div className="max-w-3xl">
             <span className="font-display text-[11px] font-bold uppercase tracking-[0.35em] text-muted">
-              {t('testimonials.eyebrow')}
+              {copy.eyebrow || t('testimonials.eyebrow')}
             </span>
             <h2 className="mt-6 font-display text-5xl font-black leading-[0.95] tracking-tight text-cream sm:text-6xl md:text-7xl">
-              {t('testimonials.title')}
+              {copy.title || t('testimonials.title')}
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted md:text-lg">{t('testimonials.subtitle')}</p>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted md:text-lg">{copy.subtitle || t('testimonials.subtitle')}</p>
           </div>
         </Reveal>
 
