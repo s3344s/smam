@@ -4,13 +4,7 @@ import Icon from './Icon'
 
 function initials(name, fallback) {
   if (!name) return fallback
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0])
-    .join('')
-    .toUpperCase()
+  return name.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toUpperCase()
 }
 
 export default function Testimonials() {
@@ -42,11 +36,19 @@ export default function Testimonials() {
                     <Icon key={idx} name="star" className="h-4 w-4 fill-current" strokeWidth={1.2} />
                   ))}
                 </div>
-                <p className="mt-8 flex-1 text-lg leading-relaxed text-cream/82">“{item.quote}”</p>
+                <p className="mt-8 flex-1 text-lg leading-relaxed text-cream/82">"{item.quote}"</p>
                 <div className="mt-10 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/18 bg-white/[0.035] font-display text-sm font-bold text-cream transition group-hover:border-champagne/40 group-hover:text-champagne">
-                    {initials(item.name, `M${i + 1}`)}
-                  </div>
+                  {item.photo ? (
+                    <img
+                      src={item.photo}
+                      alt={item.name}
+                      className="h-12 w-12 rounded-full border border-white/18 object-cover transition group-hover:border-champagne/40"
+                    />
+                  ) : (
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/18 bg-white/[0.035] font-display text-sm font-bold text-cream transition group-hover:border-champagne/40 group-hover:text-champagne">
+                      {initials(item.name, `M${i + 1}`)}
+                    </div>
+                  )}
                   <div>
                     <div className="font-display text-base font-bold text-cream">{item.name || item.role}</div>
                     <div className="text-sm text-muted">{item.role}</div>

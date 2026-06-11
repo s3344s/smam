@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useSiteData } from '../data/SiteDataContext'
 import { DEFAULT_DATA } from '../data/defaultData'
+import { supabase } from '../lib/supabase'
 import { Logo } from '../components/ui'
 import Icon from '../components/Icon'
 import {
@@ -41,11 +42,12 @@ const TABS = [
   { id: 'testimonials', label: 'Rəylər', icon: 'star' },
   { id: 'faq', label: 'FAQ', icon: 'idea' },
   { id: 'contact', label: 'Əlaqə', icon: 'phone' },
+  { id: 'submissions', label: 'Müraciətlər', icon: 'report' },
   { id: 'footer', label: 'Footer', icon: 'web' },
   { id: 'addons', label: 'Kalkulyator', icon: 'gem' },
 ]
 
-const EDITABLE_KEYS = TABS.map((t) => t.id)
+const EDITABLE_KEYS = TABS.filter((t) => t.id !== 'submissions').map((t) => t.id)
 
 function pickEditable(data) {
   return structuredClone(
@@ -103,6 +105,7 @@ export default function Dashboard({ onLogout }) {
     contact: <ContactEditor value={draft.contact} onChange={setSection('contact')} />,
     footer: <FooterEditor value={draft.footer} onChange={setSection('footer')} />,
     addons: <AddonsEditor value={draft.addons || []} onChange={setSection('addons')} />,
+    submissions: <SubmissionsPanel />,
   }
 
   const TabList = ({ onPick }) => (
@@ -259,6 +262,60 @@ export default function Dashboard({ onLogout }) {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  )
+}
+
+function SubmissionsPanel() {
+  const [submissions, setSubmissions] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    supabase
+      .from('contact_submissions')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        setSubmissions(data || [])
+        setLoading(false)
+      })
+  }, [])
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-20">
+      <svg className="h-8 w-8 animate-spin text-champagne" viewBox="0 0 24 24" fill="none">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+      </svg>
+    </div>
+  )
+
+  if (submissions.length === 0) return (
+    <div className="py-20 text-center text-muted">Hələ heç bir müraciət yoxdur.</div>
+  )
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h3 className="font-display text-lg font-semibold text-cream">Müraciətlər</h3>
+        <p className="mt-1 text-sm text-muted">Əlaqə formasından gələn müraciətlər — {submissions.length} ədəd</p>
+      </div>
+      <div className="space-y-4">
+        {submissions.map((s) => (
+          <div key={s.id} className="rounded-2xl border border-white/8 bg-white/[0.02] p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <span className="font-display text-sm font-semibold text-cream">{s.name || '—'}</span>
+                <span className="ml-3 text-xs text-muted">{s.phone || ''}</span>
+              </div>
+              <span className="shrink-0 text-xs text-muted">{new Date(s.created_at).toLocaleDateString('az-AZ')}</span>
+            </div>
+            {s.business && <p className="mt-2 text-xs text-muted">Biznes: {s.business}</p>}
+            {s.package && <p className="text-xs text-muted">Paket: {s.package}</p>}
+            {s.message && <p className="mt-3 text-sm text-cream/80 border-t border-white/8 pt-3">{s.message}</p>}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

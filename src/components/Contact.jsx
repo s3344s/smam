@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSiteData } from '../data/SiteDataContext'
 import { waLink } from '../lib/utils'
+import { saveContactSubmission } from '../lib/supabase'
 import { SectionHeading, Reveal } from './ui'
 import Icon from './Icon'
 
@@ -9,17 +10,26 @@ export default function Contact() {
   const { contact, pricing } = data
   const copy = data.sectionCopy?.contact || {}
 
-  const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    business: '',
-    pkg: '',
-    message: '',
-  })
+  const [form, setForm] = useState({ name: '', phone: '', business: '', pkg: '', message: '' })
+  const [submitted, setSubmitted] = useState(false)
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Save to Supabase
+    try {
+      await saveContactSubmission({
+        name: form.name,
+        phone: form.phone,
+        business: form.business,
+        package: form.pkg,
+        message: form.message,
+      })
+    } catch (e) {
+      console.error('Contact save error:', e)
+    }
+
+    // Also open WhatsApp
     const lines = [
       'Salam, CULTA Media Agency!',
       '',
@@ -29,7 +39,10 @@ export default function Contact() {
       form.pkg && `${copy.package || t('contact.package')}: ${form.pkg}`,
       form.message && `${copy.message || t('contact.message')}: ${form.message}`,
     ].filter(Boolean)
+
     window.open(waLink(contact.whatsappRaw, lines.join('\n')), '_blank', 'noopener,noreferrer')
+    setSubmitted(true)
+    setTimeout(() => setSubmitted(false), 4000)
   }
 
   const directButtons = [
@@ -69,68 +82,53 @@ export default function Contact() {
         <div className="mt-14 grid gap-6 lg:grid-cols-5">
           <Reveal className="lg:col-span-3">
             <div className="glass-strong rounded-3xl border border-white/8 p-7 md:p-10">
-              <div className="grid gap-5 md:grid-cols-2">
-                <div>
-                  <label className="label-dark" htmlFor="c-name">{copy.name || t('contact.name')}</label>
-                  <input
-                    id="c-name"
-                    className="input-dark"
-                    placeholder={copy.namePh || t('contact.namePh')}
-                    value={form.name}
-                    onChange={set('name')}
-                  />
+              {submitted ? (
+                <div className="flex flex-col items-center gap-4 py-8 text-center">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full border border-champagne/40 bg-champagne/10 text-champagne">
+                    <Icon name="check" className="h-7 w-7" strokeWidth={2} />
+                  </span>
+                  <p className="font-display text-lg font-semibold text-cream">Müraciətiniz qəbul edildi!</p>
+                  <p className="text-sm text-muted">Tezliklə sizinlə əlaqə saxlayacağıq.</p>
                 </div>
-                <div>
-                  <label className="label-dark" htmlFor="c-phone">{copy.phone || t('contact.phone')}</label>
-                  <input
-                    id="c-phone"
-                    className="input-dark"
-                    placeholder={copy.phonePh || t('contact.phonePh')}
-                    value={form.phone}
-                    onChange={set('phone')}
-                  />
-                </div>
-                <div>
-                  <label className="label-dark" htmlFor="c-business">{copy.business || t('contact.business')}</label>
-                  <input
-                    id="c-business"
-                    className="input-dark"
-                    placeholder={copy.businessPh || t('contact.businessPh')}
-                    value={form.business}
-                    onChange={set('business')}
-                  />
-                </div>
-                <div>
-                  <label className="label-dark" htmlFor="c-pkg">{copy.package || t('contact.package')}</label>
-                  <select id="c-pkg" className="input-dark" value={form.pkg} onChange={set('pkg')}>
-                    <option value="">{copy.select || t('contact.select')}</option>
-                    {pricing.map((p) => (
-                      <option key={p.id} value={p.name}>
-                        {p.name} — {p.price} {p.period}
-                      </option>
-                    ))}
-                    <option value={copy.undecided || t('contact.undecided')}>{copy.undecided || t('contact.undecided')}</option>
-                  </select>
-                </div>
-                <div className="md:col-span-2">
-                  <label className="label-dark" htmlFor="c-msg">{copy.message || t('contact.message')}</label>
-                  <textarea
-                    id="c-msg"
-                    rows={4}
-                    className="input-dark resize-none"
-                    placeholder={copy.messagePh || t('contact.messagePh')}
-                    value={form.message}
-                    onChange={set('message')}
-                  />
-                </div>
-              </div>
+              ) : (
+                <>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <div>
+                      <label className="label-dark" htmlFor="c-name">{copy.name || t('contact.name')}</label>
+                      <input id="c-name" className="input-dark" placeholder={copy.namePh || t('contact.namePh')} value={form.name} onChange={set('name')} />
+                    </div>
+                    <div>
+                      <label className="label-dark" htmlFor="c-phone">{copy.phone || t('contact.phone')}</label>
+                      <input id="c-phone" className="input-dark" placeholder={copy.phonePh || t('contact.phonePh')} value={form.phone} onChange={set('phone')} />
+                    </div>
+                    <div>
+                      <label className="label-dark" htmlFor="c-business">{copy.business || t('contact.business')}</label>
+                      <input id="c-business" className="input-dark" placeholder={copy.businessPh || t('contact.businessPh')} value={form.business} onChange={set('business')} />
+                    </div>
+                    <div>
+                      <label className="label-dark" htmlFor="c-pkg">{copy.package || t('contact.package')}</label>
+                      <select id="c-pkg" className="input-dark" value={form.pkg} onChange={set('pkg')}>
+                        <option value="">{copy.select || t('contact.select')}</option>
+                        {pricing.map((p) => (
+                          <option key={p.id} value={p.name}>{p.name} — {p.price} {p.period}</option>
+                        ))}
+                        <option value={copy.undecided || t('contact.undecided')}>{copy.undecided || t('contact.undecided')}</option>
+                      </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="label-dark" htmlFor="c-msg">{copy.message || t('contact.message')}</label>
+                      <textarea id="c-msg" rows={4} className="input-dark resize-none" placeholder={copy.messagePh || t('contact.messagePh')} value={form.message} onChange={set('message')} />
+                    </div>
+                  </div>
 
-              <button type="button" onClick={handleSubmit} className="btn-whatsapp mt-7 w-full justify-center">
-                <Icon name="whatsapp" className="h-5 w-5" />
-                {copy.send || t('contact.send')}
-                <Icon name="arrowRight" className="h-4 w-4" />
-              </button>
-              <p className="mt-4 text-center text-xs text-muted">{copy.privacy || t('contact.privacy')}</p>
+                  <button type="button" onClick={handleSubmit} className="btn-whatsapp mt-7 w-full justify-center">
+                    <Icon name="whatsapp" className="h-5 w-5" />
+                    {copy.send || t('contact.send')}
+                    <Icon name="arrowRight" className="h-4 w-4" />
+                  </button>
+                  <p className="mt-4 text-center text-xs text-muted">{copy.privacy || t('contact.privacy')}</p>
+                </>
+              )}
             </div>
           </Reveal>
 
@@ -150,10 +148,7 @@ export default function Contact() {
                     <span className="block font-display text-base font-medium text-cream">{b.label}</span>
                     <span className="block truncate text-sm text-muted">{b.sub}</span>
                   </span>
-                  <Icon
-                    name="arrowUpRight"
-                    className="ml-auto h-5 w-5 shrink-0 text-muted transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cream"
-                  />
+                  <Icon name="arrowUpRight" className="ml-auto h-5 w-5 shrink-0 text-muted transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cream" />
                 </a>
               </Reveal>
             ))}

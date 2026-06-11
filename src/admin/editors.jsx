@@ -1,5 +1,5 @@
 import Icon, { SERVICE_ICON_OPTIONS } from '../components/Icon'
-import { Field, TextArea, SelectField, Toggle, EditorCard, AddButton, SectionTitle } from './fields'
+import { Field, TextArea, SelectField, Toggle, EditorCard, AddButton, SectionTitle, ImageUpload } from './fields'
 
 /* ---------- helpers ---------- */
 
@@ -395,10 +395,17 @@ export function WhyUsEditor({ value, onChange }) {
 export function PortfolioEditor({ value, onChange }) {
   return (
     <div>
-      <SectionTitle title="Portfolio" desc="Portfolio kartlarındakı bütün mətnlər." />
+      <SectionTitle title="Portfolio" desc="Portfolio kartları — şəkil, mətn və rəng aksenti." />
       <div className="space-y-4">
         {value.map((item, i) => (
-          <EditorCard key={i} title={`Portfolio ${i + 1}`} onDelete={() => onChange(removeAt(value, i))}>
+          <EditorCard key={i} title={`Portfolio ${i + 1} — ${item.type || 'Yeni'}`} onDelete={() => onChange(removeAt(value, i))}>
+            <ImageUpload
+              label="Portfolio şəkli"
+              value={item.image || ''}
+              onChange={(v) => onChange(updateAt(value, i, { image: v }))}
+              folder="portfolio"
+              hint="Tövsiyə: 720×480px, maks 5MB"
+            />
             <div className="grid gap-4 md:grid-cols-2">
               <Field label="Tip / sahə" value={item.type} onChange={(v) => onChange(updateAt(value, i, { type: v }))} />
               <SelectField label="Rəng aksenti" value={item.accent} options={['champagne', 'violet', 'electric']} onChange={(v) => onChange(updateAt(value, i, { accent: v }))} />
@@ -408,7 +415,7 @@ export function PortfolioEditor({ value, onChange }) {
             <Field label="Nəticə" value={item.result} onChange={(v) => onChange(updateAt(value, i, { result: v }))} />
           </EditorCard>
         ))}
-        <AddButton label="Yeni portfolio əlavə et" onClick={() => onChange([...value, { type: 'Yeni sahə', goal: 'Hədəf', service: 'Xidmət', result: 'Nəticə', accent: 'champagne' }])} />
+        <AddButton label="Yeni portfolio əlavə et" onClick={() => onChange([...value, { type: 'Yeni sahə', goal: 'Hədəf', service: 'Xidmət', result: 'Nəticə', accent: 'champagne', image: '' }])} />
       </div>
     </div>
   )
@@ -430,10 +437,17 @@ export function IndustriesEditor({ value, onChange }) {
 export function TestimonialsEditor({ value, onChange }) {
   return (
     <div>
-      <SectionTitle title="Müştəri rəyləri" desc="Rəy mətni, ad və vəzifə/sahə tam dəyişdirilə bilər." />
+      <SectionTitle title="Müştəri rəyləri" desc="Rəy mətni, ad, vəzifə və foto." />
       <div className="space-y-4">
         {value.map((item, i) => (
-          <EditorCard key={i} title={`Rəy ${i + 1}`} onDelete={() => onChange(removeAt(value, i))}>
+          <EditorCard key={i} title={`Rəy ${i + 1} — ${item.name || 'Ad yoxdur'}`} onDelete={() => onChange(removeAt(value, i))}>
+            <ImageUpload
+              label="Müştəri fotosu (isteğe bağlı)"
+              value={item.photo || ''}
+              onChange={(v) => onChange(updateAt(value, i, { photo: v }))}
+              folder="testimonials"
+              hint="Tövsiyə: kvadrat format, 200×200px"
+            />
             <TextArea label="Rəy mətni" rows={4} value={item.quote} onChange={(v) => onChange(updateAt(value, i, { quote: v }))} />
             <div className="grid gap-4 md:grid-cols-2">
               <Field label="Ad Soyad" value={item.name} onChange={(v) => onChange(updateAt(value, i, { name: v }))} />
@@ -441,7 +455,7 @@ export function TestimonialsEditor({ value, onChange }) {
             </div>
           </EditorCard>
         ))}
-        <AddButton label="Yeni rəy əlavə et" onClick={() => onChange([...value, { quote: 'Yeni rəy mətni.', name: 'Ad Soyad', role: 'Vəzifə / biznes' }])} />
+        <AddButton label="Yeni rəy əlavə et" onClick={() => onChange([...value, { quote: 'Yeni rəy mətni.', name: 'Ad Soyad', role: 'Vəzifə / biznes', photo: '' }])} />
       </div>
     </div>
   )

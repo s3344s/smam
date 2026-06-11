@@ -73,11 +73,21 @@ export default function Portfolio() {
               >
                 {/* visual area */}
                 <div className="relative h-44 overflow-hidden">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${accent.glow} via-transparent to-transparent opacity-70 transition-transform duration-700 group-hover:scale-110`} />
-                  <div className="grid-bg absolute inset-0 opacity-60" />
-                  <span className="absolute left-6 top-6 font-display text-[64px] font-bold leading-none text-white/[0.06] transition-colors duration-500 group-hover:text-white/10">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.type}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <>
+                      <div className={`absolute inset-0 bg-gradient-to-br ${accent.glow} via-transparent to-transparent opacity-70 transition-transform duration-700 group-hover:scale-110`} />
+                      <div className="grid-bg absolute inset-0 opacity-60" />
+                      <span className="absolute left-6 top-6 font-display text-[64px] font-bold leading-none text-white/[0.06] transition-colors duration-500 group-hover:text-white/10">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                    </>
+                  )}
                   <span className={`absolute bottom-5 left-6 inline-flex items-center rounded-full border px-3.5 py-1.5 font-display text-[11px] font-semibold uppercase tracking-[0.14em] ${accent.chip}`}>
                     {item.type}
                   </span>

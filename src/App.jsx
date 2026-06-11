@@ -3,6 +3,8 @@ import { useEffect } from 'react'
 import { SiteDataProvider } from './data/SiteDataContext'
 import Home from './pages/Home'
 import Admin from './admin/Admin'
+import ResetPassword from './pages/ResetPassword'
+import NotFound from './pages/NotFound'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -19,7 +21,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/smadmin" element={<Admin />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </SiteDataProvider>
   )
