@@ -1,16 +1,11 @@
 // ============================================================
 // CULTA Media Agency — default site content
 // Everything below can be edited from the /smadmin panel.
-// Edited data is stored in localStorage under STORAGE_KEY.
+// Data is stored in Supabase (site_data table, key='main').
+// Auth is handled by Supabase Auth — no credentials in code.
 // ============================================================
 
-export const STORAGE_KEY = 'culta_site_data_v1'
-export const AUTH_KEY = 'culta_admin_auth'
-
-export const ADMIN_CREDENTIALS = {
-  username: 'admin',
-  password: 'culta2026',
-}
+export const UI_KEY_LEGACY = 'culta_site_data_v1' // kept for reference only
 
 export const DEFAULT_DATA = {
 
@@ -431,4 +426,30 @@ export const DEFAULT_DATA = {
   footer: {
     tagline: 'Diqqət yaradan, yadda qalan və satış gətirən media sistemi.',
   },
+
+  // Pricing calculator addons — editable from admin panel
+  addons: [
+    { id: 'post',       label: 'Post Dizayn',              price: 50,   unit: 'post',    type: 'counter', icon: 'design',   group: 'Dizayn və video' },
+    { id: 'story',      label: 'Story Hazırlanması',       price: 40,   unit: 'ədəd',    type: 'counter', icon: 'calendar', group: 'Dizayn və video' },
+    { id: 'reels30',    label: 'Reels Montaj (30 san)',    price: 90,   unit: 'video',   type: 'counter', icon: 'reels',    group: 'Dizayn və video' },
+    { id: 'reels60',    label: 'Reels Montaj (60 san)',    price: 140,  unit: 'video',   type: 'counter', icon: 'reels',    group: 'Dizayn və video' },
+    { id: 'ai30',       label: 'AI Video (30 san)',        price: 120,  unit: 'video',   type: 'counter', icon: 'spark',    group: 'AI video' },
+    { id: 'ai60',       label: 'AI Video (60 san)',        price: 180,  unit: 'video',   type: 'counter', icon: 'spark',    group: 'AI video' },
+    { id: 'ai90',       label: 'AI Video (90 san)',        price: 260,  unit: 'video',   type: 'counter', icon: 'spark',    group: 'AI video' },
+    { id: 'proShoot',   label: 'Professional Çəkiliş',    price: 370,  unit: 'sessiya', type: 'counter', icon: 'camera',   group: 'Çəkiliş' },
+    { id: 'mobileShoot',label: 'Mobil Çəkiliş',           price: 100,  unit: 'sessiya', type: 'counter', icon: 'phone',    group: 'Çəkiliş' },
+    { id: 'studioShoot',label: 'Studio Çəkiliş',          price: 100,  unit: 'sessiya', type: 'counter', icon: 'camera',   group: 'Çəkiliş' },
+    { id: 'droneShoot', label: 'Dron Çəkilişi',           price: 820,  unit: 'sessiya', type: 'counter', icon: 'radar',    group: 'Çəkiliş' },
+    { id: 'metaAds',    label: 'Meta Ads',                price: 320,  unit: '',        type: 'check',   icon: 'meta',     group: 'Digər SMM' },
+    { id: 'seo',        label: 'SEO Xidməti',             price: 320,  unit: '',        type: 'check',   icon: 'target',   group: 'Digər SMM' },
+    { id: 'chatbot',    label: 'AI Chatbot',              price: 420,  unit: '',        type: 'check',   icon: 'spark',    group: 'Digər SMM' },
+    { id: 'copyPlan',   label: 'Copywriting və Kontent Planı', price: 220, unit: '',   type: 'check',   icon: 'copy',     group: 'Digər SMM' },
+    { id: 'competitor', label: 'Rəqib Analizi',           price: 320,  unit: '',        type: 'check',   icon: 'radar',    group: 'Digər SMM' },
+    { id: 'brandbook',  label: 'Brandbook Hazırlanması',  price: 420,  unit: '',        type: 'check',   icon: 'brand',    group: 'Digər SMM' },
+    { id: 'website',    label: 'Website Xidməti (Start)', price: 1220, unit: '',        type: 'check',   icon: 'web',      group: 'Digər SMM' },
+    { id: 'community',  label: 'Community Management',   price: 200,  unit: '',        type: 'check',   icon: 'team',     group: 'Digər SMM' },
+    { id: 'campaign',   label: 'Reklam Kampaniyası',      price: 180,  unit: '',        type: 'check',   icon: 'growth',   group: 'Digər SMM' },
+    { id: 'smmManage',  label: 'SMM İdarəetmə',          price: 270,  unit: '',        type: 'check',   icon: 'system',   group: 'Digər SMM' },
+    { id: 'branding',   label: 'Branding Dizayn',         price: 220,  unit: '',        type: 'check',   icon: 'gem',      group: 'Digər SMM' },
+  ],
 }

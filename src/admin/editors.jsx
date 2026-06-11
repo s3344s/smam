@@ -458,3 +458,70 @@ export function FooterEditor({ value, onChange }) {
     </div>
   )
 }
+
+/* ---------- Addons (Pricing Calculator) ---------- */
+
+const ADDON_GROUPS = ['Dizayn və video', 'AI video', 'Çəkiliş', 'Digər SMM']
+
+export function AddonsEditor({ value, onChange }) {
+  const updateAddon = (i, patch) => onChange(value.map((a, idx) => (idx === i ? { ...a, ...patch } : a)))
+  const removeAddon = (i) => onChange(value.filter((_, idx) => idx !== i))
+
+  return (
+    <div>
+      <SectionTitle
+        title="Kalkulyator — Əlavə xidmətlər"
+        desc="Qiymət kalkulyatorunda görünən əlavə xidmətlər və qiymətlər. Qrup adı kartı vizual olaraq qruplaşdırır."
+      />
+      <div className="space-y-4">
+        {value.map((addon, i) => (
+          <EditorCard
+            key={addon.id || i}
+            title={<span className="flex items-center gap-2"><span className="text-xs text-champagne/60">{addon.group}</span> — {addon.label}</span>}
+            onDelete={() => removeAddon(i)}
+          >
+            <div className="grid gap-4 md:grid-cols-2">
+              <SelectField
+                label="Qrup"
+                value={addon.group}
+                options={ADDON_GROUPS}
+                onChange={(v) => updateAddon(i, { group: v })}
+              />
+              <SelectField
+                label="Tip"
+                value={addon.type}
+                options={['counter', 'check']}
+                onChange={(v) => updateAddon(i, { type: v })}
+              />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Ad" value={addon.label} onChange={(v) => updateAddon(i, { label: v })} />
+              <Field label="Qiymət (AZN)" value={String(addon.price)} onChange={(v) => updateAddon(i, { price: Number(v) || 0 })} hint="Rəqəm daxil edin" />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Vahid (counter üçün)" value={addon.unit || ''} onChange={(v) => updateAddon(i, { unit: v })} hint="məs: post, video, sessiya" />
+              <SelectField
+                label="İkon"
+                value={addon.icon}
+                options={['design', 'calendar', 'reels', 'spark', 'camera', 'phone', 'radar', 'meta', 'target', 'copy', 'brand', 'web', 'team', 'growth', 'system', 'gem']}
+                onChange={(v) => updateAddon(i, { icon: v })}
+              />
+            </div>
+          </EditorCard>
+        ))}
+        <AddButton
+          label="Yeni əlavə xidmət"
+          onClick={() => onChange([...value, {
+            id: `addon-${Date.now()}`,
+            label: 'Yeni xidmət',
+            price: 100,
+            unit: '',
+            type: 'check',
+            icon: 'spark',
+            group: 'Digər SMM',
+          }])}
+        />
+      </div>
+    </div>
+  )
+}

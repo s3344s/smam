@@ -1,22 +1,29 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ADMIN_CREDENTIALS } from '../data/defaultData'
+import { signInAdmin } from '../lib/supabase'
 import { Logo } from '../components/ui'
 import Icon from '../components/Icon'
 
 export default function Login({ onSuccess }) {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e?.preventDefault?.()
-    if (username.trim() === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+    if (!email || !password) return
+    setLoading(true)
+    setError(false)
+    try {
+      await signInAdmin(email.trim(), password)
       onSuccess()
-    } else {
+    } catch {
       setError(true)
       setTimeout(() => setError(false), 1800)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -46,14 +53,15 @@ export default function Login({ onSuccess }) {
 
           <form onSubmit={submit} className="mt-8 space-y-5">
             <div>
-              <label className="label-dark" htmlFor="adm-user">İstifadəçi adı</label>
+              <label className="label-dark" htmlFor="adm-email">E-poçt</label>
               <input
-                id="adm-user"
+                id="adm-email"
+                type="email"
                 className="input-dark"
-                placeholder="admin"
-                autoComplete="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="admin@culta.az"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -70,12 +78,28 @@ export default function Login({ onSuccess }) {
             </div>
 
             {error && (
-              <p className="text-center text-sm text-red-400">İstifadəçi adı və ya şifrə yanlışdır.</p>
+              <p className="text-center text-sm text-red-400">E-poçt və ya şifrə yanlışdır.</p>
             )}
 
-            <button type="submit" className="btn-primary w-full justify-center">
-              Daxil ol
-              <Icon name="arrowRight" className="h-4 w-4" />
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full justify-center disabled:opacity-60"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  Giriş edilir...
+                </span>
+              ) : (
+                <>
+                  Daxil ol
+                  <Icon name="arrowRight" className="h-4 w-4" />
+                </>
+              )}
             </button>
           </form>
         </motion.div>

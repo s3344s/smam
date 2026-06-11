@@ -22,6 +22,7 @@ import {
   FaqEditor,
   ContactEditor,
   FooterEditor,
+  AddonsEditor,
 } from './editors'
 
 const TABS = [
@@ -41,6 +42,7 @@ const TABS = [
   { id: 'faq', label: 'FAQ', icon: 'idea' },
   { id: 'contact', label: 'Əlaqə', icon: 'phone' },
   { id: 'footer', label: 'Footer', icon: 'web' },
+  { id: 'addons', label: 'Kalkulyator', icon: 'gem' },
 ]
 
 const EDITABLE_KEYS = TABS.map((t) => t.id)
@@ -100,6 +102,7 @@ export default function Dashboard({ onLogout }) {
     faq: <FaqEditor value={draft.faq} onChange={setSection('faq')} />,
     contact: <ContactEditor value={draft.contact} onChange={setSection('contact')} />,
     footer: <FooterEditor value={draft.footer} onChange={setSection('footer')} />,
+    addons: <AddonsEditor value={draft.addons || []} onChange={setSection('addons')} />,
   }
 
   const TabList = ({ onPick }) => (
