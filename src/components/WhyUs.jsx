@@ -3,7 +3,7 @@ import { Reveal, SectionHeading, TiltCard } from './ui'
 import { useSiteData } from '../data/SiteDataContext'
 
 export default function WhyUs() {
-  const { data } = useSiteData()
+  const { siteData: data, t } = useSiteData()
   const { whyUs } = data
 
   return (
@@ -14,9 +14,9 @@ export default function WhyUs() {
       />
       <div className="container-x relative">
         <SectionHeading
-          eyebrow="Niyə biz?"
-          title="Niyə CULTA?"
-          subtitle="Çünki biz paylaşım sayına yox, brendinizin görünüşünə, sisteminə və nəticəsinə fokuslanırıq."
+          eyebrow={t('why.eyebrow')}
+          title={t('why.title')}
+          subtitle={t('why.subtitle')}
         />
 
         <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -54,16 +54,16 @@ function FaqItem({ item, open, onToggle, index }) {
 }
 
 export default function FAQ() {
-  const { data } = useSiteData()
+  const { siteData: data, t } = useSiteData()
   const [openIndex, setOpenIndex] = useState(0)
 
   return (
     <section id="faq" className="relative scroll-mt-24 py-24 md:py-32">
       <div className="mx-auto max-w-4xl px-5 md:px-8">
         <SectionHeading
-          eyebrow="FAQ"
-          title="Tez-tez verilən suallar"
-          subtitle="Əməkdaşlıqdan əvvəl ən çox soruşulan suallara cavablar."
+          eyebrow={t('faq.eyebrow')}
+          title={t('faq.title')}
+          subtitle={t('faq.subtitle')}
         />
 
         <div className="mt-14 space-y-4">

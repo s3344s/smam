@@ -16,8 +16,10 @@ import Testimonials from '../components/Testimonials'
 import FAQ from '../components/FAQ'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer'
+import { useSiteData } from '../data/SiteDataContext'
 
 export default function Home() {
+  const { theme } = useSiteData()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="noise relative min-h-screen bg-ink text-cream">
+    <div className={`noise relative min-h-screen bg-ink text-cream ${theme === 'light' ? 'site-light' : 'site-dark'}`}>
       <AnimatePresence>{loading && <Preloader key="preloader" />}</AnimatePresence>
 
       <Navbar />

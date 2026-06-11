@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { DEFAULT_DATA, STORAGE_KEY } from './defaultData'
+import { UI_KEY, getCopy, translateSiteData } from './i18n'
 
 const SiteDataContext = createContext(null)
 
@@ -29,8 +30,22 @@ function loadData() {
   }
 }
 
+function loadUi() {
+  try {
+    const raw = window.localStorage.getItem(UI_KEY)
+    const parsed = raw ? JSON.parse(raw) : null
+    return {
+      lang: ['az', 'en', 'ru'].includes(parsed?.lang) ? parsed.lang : 'az',
+      theme: ['dark', 'light'].includes(parsed?.theme) ? parsed.theme : 'dark',
+    }
+  } catch {
+    return { lang: 'az', theme: 'dark' }
+  }
+}
+
 export function SiteDataProvider({ children }) {
   const [data, setData] = useState(loadData)
+  const [ui, setUi] = useState(loadUi)
 
   // Persist instantly — public pages always read the latest data.
   useEffect(() => {
@@ -40,6 +55,18 @@ export function SiteDataProvider({ children }) {
       // storage unavailable (private mode etc.) — site keeps working in memory
     }
   }, [data])
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(UI_KEY, JSON.stringify(ui))
+    } catch {
+      /* noop */
+    }
+
+    document.documentElement.lang = ui.lang
+    document.documentElement.classList.toggle('theme-light', ui.theme === 'light')
+    document.documentElement.classList.toggle('theme-dark', ui.theme === 'dark')
+  }, [ui])
 
   const updateSection = useCallback((key, value) => {
     setData((prev) => ({ ...prev, [key]: value }))
@@ -54,7 +81,25 @@ export function SiteDataProvider({ children }) {
     }
   }, [])
 
-  const value = useMemo(() => ({ data, setData, updateSection, resetAll }), [data, updateSection, resetAll])
+  const setLang = useCallback((lang) => {
+    setUi((prev) => ({ ...prev, lang }))
+  }, [])
+
+  const setTheme = useCallback((theme) => {
+    setUi((prev) => ({ ...prev, theme }))
+  }, [])
+
+  const toggleTheme = useCallback(() => {
+    setUi((prev) => ({ ...prev, theme: prev.theme === 'dark' ? 'light' : 'dark' }))
+  }, [])
+
+  const siteData = useMemo(() => translateSiteData(data, ui.lang), [data, ui.lang])
+  const t = useCallback((key) => getCopy(ui.lang, key), [ui.lang])
+
+  const value = useMemo(
+    () => ({ data, siteData, setData, updateSection, resetAll, lang: ui.lang, setLang, theme: ui.theme, setTheme, toggleTheme, t }),
+    [data, siteData, updateSection, resetAll, ui.lang, ui.theme, setLang, setTheme, toggleTheme, t]
+  )
 
   return <SiteDataContext.Provider value={value}>{children}</SiteDataContext.Provider>
 }

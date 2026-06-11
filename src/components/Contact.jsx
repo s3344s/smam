@@ -5,7 +5,7 @@ import { SectionHeading, Reveal } from './ui'
 import Icon from './Icon'
 
 export default function Contact() {
-  const { data } = useSiteData()
+  const { siteData: data, t } = useSiteData()
   const { contact, pricing } = data
 
   const [form, setForm] = useState({
@@ -22,32 +22,32 @@ export default function Contact() {
     const lines = [
       'Salam, CULTA Media Agency!',
       '',
-      form.name && `Ad: ${form.name}`,
-      form.phone && `Telefon: ${form.phone}`,
-      form.business && `Biznes sahəsi: ${form.business}`,
-      form.pkg && `Maraqlandığım paket: ${form.pkg}`,
-      form.message && `Mesaj: ${form.message}`,
+      form.name && `${t('contact.name')}: ${form.name}`,
+      form.phone && `${t('contact.phone')}: ${form.phone}`,
+      form.business && `${t('contact.business')}: ${form.business}`,
+      form.pkg && `${t('contact.package')}: ${form.pkg}`,
+      form.message && `${t('contact.message')}: ${form.message}`,
     ].filter(Boolean)
     window.open(waLink(contact.whatsappRaw, lines.join('\n')), '_blank', 'noopener,noreferrer')
   }
 
   const directButtons = [
     {
-      label: 'WhatsApp-a yaz',
+      label: t('contact.wa'),
       sub: contact.whatsappDisplay,
       icon: 'whatsapp',
       href: waLink(contact.whatsappRaw, 'Salam, CULTA Media Agency. Məlumat almaq istəyirəm.'),
       accent: 'text-[#4ade80]',
     },
     {
-      label: 'Instagram-a keç',
+      label: t('contact.ig'),
       sub: contact.instagramHandle,
       icon: 'instagram',
       href: contact.instagramUrl,
       accent: 'text-violet',
     },
     {
-      label: 'Zəng et',
+      label: t('contact.call'),
       sub: contact.phoneDisplay,
       icon: 'phone',
       href: `tel:${contact.phoneRaw}`,
@@ -60,65 +60,64 @@ export default function Contact() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[440px] bg-gradient-to-t from-champagne/[0.05] to-transparent" />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <SectionHeading
-          eyebrow="Əlaqə"
-          title="Layihənizi danışaq"
-          subtitle="Formu doldurun — mesajınız birbaşa WhatsApp-a yönləndirilsin. Cavab adətən bir neçə saat ərzində verilir."
+          eyebrow={t('contact.eyebrow')}
+          title={t('contact.title')}
+          subtitle={t('contact.subtitle')}
         />
 
         <div className="mt-14 grid gap-6 lg:grid-cols-5">
-          {/* Form */}
           <Reveal className="lg:col-span-3">
             <div className="glass-strong rounded-3xl border border-white/8 p-7 md:p-10">
               <div className="grid gap-5 md:grid-cols-2">
                 <div>
-                  <label className="label-dark" htmlFor="c-name">Ad</label>
+                  <label className="label-dark" htmlFor="c-name">{t('contact.name')}</label>
                   <input
                     id="c-name"
                     className="input-dark"
-                    placeholder="Adınız"
+                    placeholder={t('contact.namePh')}
                     value={form.name}
                     onChange={set('name')}
                   />
                 </div>
                 <div>
-                  <label className="label-dark" htmlFor="c-phone">Telefon</label>
+                  <label className="label-dark" htmlFor="c-phone">{t('contact.phone')}</label>
                   <input
                     id="c-phone"
                     className="input-dark"
-                    placeholder="0XX-XXX-XX-XX"
+                    placeholder={t('contact.phonePh')}
                     value={form.phone}
                     onChange={set('phone')}
                   />
                 </div>
                 <div>
-                  <label className="label-dark" htmlFor="c-business">Biznes sahəsi</label>
+                  <label className="label-dark" htmlFor="c-business">{t('contact.business')}</label>
                   <input
                     id="c-business"
                     className="input-dark"
-                    placeholder="Məsələn: restoran, klinika, e-commerce…"
+                    placeholder={t('contact.businessPh')}
                     value={form.business}
                     onChange={set('business')}
                   />
                 </div>
                 <div>
-                  <label className="label-dark" htmlFor="c-pkg">Maraqlandığınız paket</label>
+                  <label className="label-dark" htmlFor="c-pkg">{t('contact.package')}</label>
                   <select id="c-pkg" className="input-dark" value={form.pkg} onChange={set('pkg')}>
-                    <option value="">Seçin…</option>
+                    <option value="">{t('contact.select')}</option>
                     {pricing.map((p) => (
                       <option key={p.id} value={p.name}>
                         {p.name} — {p.price} {p.period}
                       </option>
                     ))}
-                    <option value="Hələ qərar verməmişəm">Hələ qərar verməmişəm</option>
+                    <option value={t('contact.undecided')}>{t('contact.undecided')}</option>
                   </select>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="label-dark" htmlFor="c-msg">Mesaj</label>
+                  <label className="label-dark" htmlFor="c-msg">{t('contact.message')}</label>
                   <textarea
                     id="c-msg"
                     rows={4}
                     className="input-dark resize-none"
-                    placeholder="Layihəniz, hədəfiniz və ya sualınız haqqında qısa yazın…"
+                    placeholder={t('contact.messagePh')}
                     value={form.message}
                     onChange={set('message')}
                   />
@@ -127,16 +126,13 @@ export default function Contact() {
 
               <button type="button" onClick={handleSubmit} className="btn-whatsapp mt-7 w-full justify-center">
                 <Icon name="whatsapp" className="h-5 w-5" />
-                WhatsApp ilə göndər
+                {t('contact.send')}
                 <Icon name="arrowRight" className="h-4 w-4" />
               </button>
-              <p className="mt-4 text-center text-xs text-muted">
-                Göndər düyməsi WhatsApp tətbiqini hazır mesajla açır — heç bir məlumat serverə göndərilmir.
-              </p>
+              <p className="mt-4 text-center text-xs text-muted">{t('contact.privacy')}</p>
             </div>
           </Reveal>
 
-          {/* Direct contact */}
           <div className="flex flex-col gap-5 lg:col-span-2">
             {directButtons.map((b, i) => (
               <Reveal key={b.label} delay={0.08 + i * 0.08}>
@@ -165,12 +161,9 @@ export default function Contact() {
               <div className="glass rounded-3xl border border-champagne/20 bg-gradient-to-br from-champagne/[0.07] to-transparent p-6">
                 <div className="flex items-center gap-2 text-champagne">
                   <Icon name="spark" className="h-4 w-4" />
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em]">Pulsuz konsultasiya</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em]">{t('contact.consult')}</span>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-cream/80">
-                  İlk görüş ödənişsizdir. Biznesinizi dinləyir, mövcud vəziyyəti analiz edir və sizə uyğun
-                  yanaşmanı təqdim edirik — heç bir öhdəlik olmadan.
-                </p>
+                <p className="mt-3 text-sm leading-relaxed text-cream/80">{t('contact.consultText')}</p>
               </div>
             </Reveal>
           </div>

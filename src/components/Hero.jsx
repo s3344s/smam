@@ -38,7 +38,7 @@ function FloatingCard({ label, icon, className, delay = 0 }) {
 }
 
 export default function Hero() {
-  const { data } = useSiteData()
+  const { siteData: data, t } = useSiteData()
   const { hero, contact } = data
   const isMobile = useIsMobile()
   const mouse = useRef({ x: 0, y: 0 })
@@ -161,7 +161,7 @@ export default function Hero() {
           transition={{ delay: 1.6, duration: 0.8 }}
           className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-muted md:flex"
         >
-        <span className="text-[10px] font-display uppercase tracking-[0.4em]">Kəşf et</span>
+        <span className="text-[10px] font-display uppercase tracking-[0.4em]">{t('common.discover')}</span>
         <motion.span
           animate={{ y: [0, 7, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}

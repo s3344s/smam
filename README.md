@@ -24,7 +24,7 @@ npm run preview    # yığılmış versiyaya lokal baxış
 
 ## 2. Admin paneli
 
-Ünvan: **`/admin`** (məs: `http://localhost:5173/admin`). Saytın footer-indəki diskret **"Admin girişi"** linki də ora aparır.
+Ünvan: **`/smadmin`** (məs: `http://localhost:5173/smadmin`). Admin girişi artıq footerdə görünmür; panelə birbaşa `/smadmin` ünvanından daxil olunur.
 
 | | |
 |---|---|
@@ -52,7 +52,7 @@ Bütün redaktə olunan məzmun **brauzerin `localStorage`** yaddaşında saxlan
 
 1. Layihəni GitHub-a yükləyin və Vercel-də **New Project** ilə seçin.
 2. Framework avtomatik **Vite** kimi tanınacaq (Build: `npm run build`, Output: `dist`).
-3. `/admin` kimi marşrutların işləməsi üçün kök qovluqda `vercel.json` yaradın:
+3. `/smadmin` kimi marşrutların işləməsi üçün kök qovluqda `vercel.json` yaradın:
 
 ```json
 {
@@ -73,7 +73,7 @@ Bütün redaktə olunan məzmun **brauzerin `localStorage`** yaddaşında saxlan
 
 ```
 src/
-├── main.jsx / App.jsx        # giriş nöqtəsi və marşrutlar (/, /admin)
+├── main.jsx / App.jsx        # giriş nöqtəsi və marşrutlar (/, /smadmin)
 ├── pages/Home.jsx             # bütün bölmələrin yığıldığı səhifə
 ├── components/                # Preloader, Navbar, Hero (+Hero3D), Stats, About,
 │                              # Services, Pricing, WhyUs, Portfolio, Process,

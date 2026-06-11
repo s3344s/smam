@@ -27,7 +27,7 @@ function CountUp({ value, suffix }) {
 }
 
 export default function Stats() {
-  const { data } = useSiteData()
+  const { siteData: data } = useSiteData()
 
   return (
     <section id="stats" className="relative border-y border-white/[0.06] bg-panel/60">

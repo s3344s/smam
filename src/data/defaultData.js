@@ -1,6 +1,6 @@
 // ============================================================
 // CULTA Media Agency — default site content
-// Everything below can be edited from the /admin panel.
+// Everything below can be edited from the /smadmin panel.
 // Edited data is stored in localStorage under STORAGE_KEY.
 // ============================================================
 
@@ -239,9 +239,21 @@ export const DEFAULT_DATA = {
   ],
 
   testimonials: [
-    { quote: 'CULTA ilə səhifəmizin görünüşü tam dəyişdi. İndi brendimiz həqiqətən premium görünür.', role: 'Biznes sahibi' },
-    { quote: 'Kontentlər daha premium və sistemli oldu. Hər ay nə paylaşılacağını dəqiq bilirik.', role: 'Klinika rəhbəri' },
-    { quote: 'Reklam yanaşması əvvəlkindən daha peşəkar quruldu. Müraciətlərin sayı nəzərəçarpacaq dərəcədə artdı.', role: 'Restoran meneceri' },
+    {
+      quote: 'CULTA ilə işləməyə başlayandan sonra sosial media görünüşümüz tam dəyişdi. Brendimiz daha premium və etibarlı görünməyə başladı.',
+      name: 'Aysel Həsənova',
+      role: 'Beauty brand sahibi',
+    },
+    {
+      quote: 'Kontent sistemi çox səliqəli quruldu. Hər paylaşımın məqsədi var və aylıq plan biznesimizə uyğun hazırlanır.',
+      name: 'Rəşad Məmmədov',
+      role: 'Restoran rəhbəri',
+    },
+    {
+      quote: 'Reklam və vizual yanaşma sayəsində daha keyfiyyətli müraciətlər almağa başladıq. Hesabatlar da çox aydın təqdim olunur.',
+      name: 'Nigar Əliyeva',
+      role: 'Tədris mərkəzi direktoru',
+    },
   ],
 
   faq: [

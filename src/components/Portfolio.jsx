@@ -22,7 +22,7 @@ const ACCENTS = {
 }
 
 export default function Portfolio() {
-  const { data } = useSiteData()
+  const { siteData: data, t } = useSiteData()
   const trackRef = useRef(null)
 
   const scrollBy = (dir) => {
@@ -35,21 +35,21 @@ export default function Portfolio() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading
             align="left"
-            eyebrow="Portfolio"
-            title="İşlədiyimiz biznes sahələrindən nümunələr"
-            subtitle="Hər sahə üçün fərqli strategiya, fərqli vizual dil və fərqli nəticə hədəfi."
+            eyebrow={t('portfolio.eyebrow')}
+            title={t('portfolio.title')}
+            subtitle={t('portfolio.subtitle')}
           />
           <Reveal delay={0.2} className="hidden gap-2.5 md:flex">
             <button
               onClick={() => scrollBy(-1)}
-              aria-label="Əvvəlki"
+              aria-label={t('portfolio.prev')}
               className="flex h-12 w-12 items-center justify-center rounded-full border border-white/15 text-cream transition-all hover:border-champagne/50 hover:bg-white/[0.05]"
             >
               <Icon name="arrowRight" className="h-5 w-5 rotate-180" />
             </button>
             <button
               onClick={() => scrollBy(1)}
-              aria-label="Növbəti"
+              aria-label={t('portfolio.next')}
               className="flex h-12 w-12 items-center justify-center rounded-full border border-white/15 text-cream transition-all hover:border-champagne/50 hover:bg-white/[0.05]"
             >
               <Icon name="arrowRight" className="h-5 w-5" />
@@ -84,11 +84,11 @@ export default function Portfolio() {
 
                 <div className="flex flex-1 flex-col gap-4 p-6">
                   <div>
-                    <span className="label-dark !mb-1">Hədəf</span>
+                    <span className="label-dark !mb-1">{t('portfolio.goal')}</span>
                     <p className="text-sm leading-relaxed text-cream/90">{item.goal}</p>
                   </div>
                   <div>
-                    <span className="label-dark !mb-1">Xidmət</span>
+                    <span className="label-dark !mb-1">{t('portfolio.service')}</span>
                     <p className="text-sm text-muted">{item.service}</p>
                   </div>
                   <div className="mt-auto flex items-center gap-2.5 border-t border-white/[0.07] pt-4">

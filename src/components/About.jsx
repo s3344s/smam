@@ -3,7 +3,7 @@ import { Reveal, SectionHeading, TiltCard } from './ui'
 import { useSiteData } from '../data/SiteDataContext'
 
 export default function About() {
-  const { data } = useSiteData()
+  const { siteData: data, t } = useSiteData()
   const { about } = data
 
   return (
@@ -14,7 +14,7 @@ export default function About() {
       />
       <div className="container-x relative grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <div>
-          <SectionHeading align="left" eyebrow="Haqqımızda" title={about.title} />
+          <SectionHeading align="left" eyebrow={t('about.eyebrow')} title={about.title} />
           <Reveal delay={0.2}>
             <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted md:text-xl">
               <span className="text-cream">{about.text.split('.')[0]}.</span>{' '}
@@ -25,7 +25,7 @@ export default function About() {
             <div className="mt-9 flex items-center gap-4">
               <span className="h-px w-14 bg-gradient-to-r from-champagne to-transparent" />
               <span className="font-display text-xs font-medium uppercase tracking-[0.35em] text-champagne/80">
-                Sistemli yanaşma
+                {t('about.system')}
               </span>
             </div>
           </Reveal>
