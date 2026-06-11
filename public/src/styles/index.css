@@ -1,0 +1,407 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+body {
+  @apply bg-ink text-cream font-body antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(216, 197, 160, 0.35);
+  color: #fff;
+}
+
+/* ---------- scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #07070b;
+}
+::-webkit-scrollbar-thumb {
+  background: #232330;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #38384a;
+}
+
+@layer components {
+  /* ---------- surfaces ---------- */
+  .glass {
+    @apply bg-white/[0.04] border border-white/10 backdrop-blur-md;
+  }
+  .glass-strong {
+    @apply bg-white/[0.06] border border-white/[0.14] backdrop-blur-xl;
+  }
+
+  .section-pad {
+    @apply py-24 md:py-32;
+  }
+
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
+  }
+
+  /* ---------- eyebrow with pixel cluster (brand signature) ---------- */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-[11px] md:text-xs font-display font-medium uppercase tracking-[0.35em] text-champagne;
+  }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3.5 font-display text-sm font-semibold tracking-wide transition-all duration-300;
+  }
+  .btn-primary {
+    @apply btn bg-gradient-to-r from-champagne-light via-champagne to-champagne-dark text-ink shadow-glow hover:shadow-[0_0_55px_-8px_rgba(216,197,160,0.55)] hover:-translate-y-0.5;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.7s ease;
+  }
+  .btn-primary:hover::after {
+    transform: translateX(120%);
+  }
+  .btn-ghost {
+    @apply btn border border-white/15 bg-white/[0.03] text-cream hover:border-champagne/50 hover:bg-white/[0.07] hover:-translate-y-0.5;
+  }
+  .btn-whatsapp {
+    @apply btn bg-[#1f3d2c] border border-[#37dd7a]/30 text-[#9af2c0] hover:border-[#37dd7a]/70 hover:shadow-[0_0_40px_-10px_rgba(55,221,122,0.5)] hover:-translate-y-0.5;
+  }
+
+  /* ---------- tilt card with mouse spotlight ---------- */
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.18s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
+    position: relative;
+  }
+  .tilt-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      260px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(216, 197, 160, 0.14),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .tilt-card:hover::before {
+    opacity: 1;
+  }
+  .tilt-card:hover {
+    border-color: rgba(216, 197, 160, 0.35);
+    box-shadow: 0 24px 70px -28px rgba(0, 0, 0, 0.85), 0 0 50px -22px rgba(216, 197, 160, 0.35);
+  }
+
+  /* ---------- inputs ---------- */
+  .input-dark {
+    @apply w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-cream placeholder:text-muted/60 outline-none transition-colors focus:border-champagne/60 focus:bg-white/[0.06];
+  }
+  .label-dark {
+    @apply mb-1.5 block text-[11px] font-display font-medium uppercase tracking-[0.2em] text-muted;
+  }
+}
+
+/* ---------- background grid ---------- */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+}
+
+/* ---------- film grain ---------- */
+.noise::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- marquee ---------- */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.marquee-track.reverse {
+  animation-direction: reverse;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ---------- hide scrollbar for carousels ---------- */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ---------- hero fallback orb while 3D loads ---------- */
+.hero-orb-fallback {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(139, 124, 246, 0.22), transparent 45%),
+    radial-gradient(circle at 55% 50%, rgba(216, 197, 160, 0.14), transparent 40%);
+  filter: blur(10px);
+}
+
+/* ---------- mobile hero orb: pure CSS, compositor-only animation ---------- */
+.hero-orb-static {
+  position: absolute;
+  top: 5%;
+  right: -22%;
+  width: min(78vw, 340px);
+  height: min(78vw, 340px);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.85;
+  background:
+    radial-gradient(circle at 36% 30%, rgba(235, 223, 196, 0.28), transparent 44%),
+    radial-gradient(circle at 64% 70%, rgba(139, 124, 246, 0.34), transparent 55%),
+    radial-gradient(circle at 50% 50%, #17151f 0%, #0c0b13 58%, rgba(12, 11, 19, 0) 70%);
+}
+.hero-orb-static::before,
+.hero-orb-static::after {
+  content: '';
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0% 72%, rgba(216, 197, 160, 0.6) 84%, transparent 96%);
+  -webkit-mask: radial-gradient(closest-side, transparent 77%, #000 78% 83%, transparent 84%);
+  mask: radial-gradient(closest-side, transparent 77%, #000 78% 83%, transparent 84%);
+  animation: orb-spin 16s linear infinite;
+}
+.hero-orb-static::after {
+  inset: -26%;
+  background: conic-gradient(from 180deg, transparent 0% 78%, rgba(139, 124, 246, 0.5) 88%, transparent 98%);
+  animation: orb-spin 26s linear infinite reverse;
+}
+@keyframes orb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- mobile performance overrides ----------
+   backdrop-filter and huge filter:blur() layers are the main
+   GPU killers on phones — swap them for cheap equivalents. */
+@media (max-width: 768px) {
+  /* glass → opaque panels, no backdrop sampling */
+  .glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: rgba(19, 19, 27, 0.88);
+  }
+  .glass-strong {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: rgba(22, 22, 31, 0.96);
+  }
+
+  /* giant glow layers: drop the blur filter, fake softness with a radial mask */
+  [class*='blur-['] {
+    filter: none !important;
+    -webkit-mask-image: radial-gradient(closest-side, rgba(0, 0, 0, 0.8), transparent);
+    mask-image: radial-gradient(closest-side, rgba(0, 0, 0, 0.8), transparent);
+  }
+
+  /* film grain: huge fixed layer — not worth it on phones */
+  .noise::after {
+    display: none;
+  }
+
+  /* slightly calmer marquee */
+  .marquee-track {
+    animation-duration: 48s;
+  }
+}
+
+.marquee-track {
+  will-change: transform;
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    transition-duration: 0.001s !important;
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ---------- brighter dark typography ---------- */
+.theme-dark .text-muted,
+.theme-dark [class~='text-muted'] {
+  color: #e4dfeb !important;
+}
+.theme-dark [class*='text-muted/'] {
+  color: rgba(228, 223, 235, 0.9) !important;
+}
+.theme-dark [class*='text-cream/70'],
+.theme-dark [class*='text-cream/80'],
+.theme-dark [class*='text-cream/82'],
+.theme-dark [class*='text-cream/85'],
+.theme-dark [class*='text-cream/90'] {
+  color: rgba(255, 253, 247, 0.96) !important;
+}
+
+/* ---------- light mode ---------- */
+.theme-light body {
+  background: #f6f2ea;
+  color: #181712;
+}
+.theme-light ::selection {
+  background: rgba(180, 158, 114, 0.28);
+  color: #111;
+}
+.theme-light .site-light {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(216, 197, 160, 0.26), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(139, 124, 246, 0.16), transparent 30%),
+    #f6f2ea !important;
+  color: #181712 !important;
+}
+.theme-light [class~='bg-ink'],
+.theme-light [class~='bg-ink/75'],
+.theme-light [class~='bg-ink/95'] {
+  background-color: rgba(246, 242, 234, 0.92) !important;
+}
+.theme-light [class~='bg-panel'],
+.theme-light [class~='bg-panel/40'],
+.theme-light [class~='bg-panel/60'],
+.theme-light [class~='bg-surface'] {
+  background-color: rgba(242, 237, 226, 0.72) !important;
+}
+.theme-light .glass,
+.theme-light .glass-strong {
+  background: rgba(255, 255, 255, 0.64) !important;
+  border-color: rgba(24, 23, 18, 0.11) !important;
+  box-shadow: 0 22px 60px -32px rgba(24, 23, 18, 0.28);
+}
+.theme-light [class*='border-white/'] {
+  border-color: rgba(24, 23, 18, 0.12) !important;
+}
+.theme-light [class~='text-cream'],
+.theme-light [class*='text-cream/'] {
+  color: rgba(24, 23, 18, 0.93) !important;
+}
+.theme-light [class~='text-muted'],
+.theme-light [class*='text-muted/'] {
+  color: rgba(83, 79, 91, 0.9) !important;
+}
+.theme-light .grid-bg {
+  background-image:
+    linear-gradient(rgba(24, 23, 18, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 23, 18, 0.05) 1px, transparent 1px);
+}
+.theme-light .btn-ghost {
+  border-color: rgba(24, 23, 18, 0.16) !important;
+  background: rgba(255, 255, 255, 0.52) !important;
+  color: #181712 !important;
+}
+.theme-light .input-dark {
+  background: rgba(255, 255, 255, 0.68) !important;
+  border-color: rgba(24, 23, 18, 0.14) !important;
+  color: #181712 !important;
+}
+.theme-light .input-dark::placeholder {
+  color: rgba(83, 79, 91, 0.6) !important;
+}
+.theme-light ::-webkit-scrollbar-track {
+  background: #eee8dc;
+}
+.theme-light ::-webkit-scrollbar-thumb {
+  background: #cfc7b8;
+}
+
+
+/* ---------- extra responsive polish ---------- */
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.theme-dark .text-cream,
+.theme-dark [class~='text-cream'] {
+  text-shadow: 0 0 18px rgba(255, 253, 247, 0.06);
+}
+
+@media (max-width: 1024px) {
+  .container-x {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    scroll-padding-top: 78px;
+  }
+  .section-pad {
+    padding-top: 4.5rem !important;
+    padding-bottom: 4.5rem !important;
+  }
+  .eyebrow {
+    letter-spacing: 0.22em !important;
+    font-size: 10px !important;
+  }
+  .btn {
+    width: 100%;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+  .btn-ghost,
+  .btn-primary,
+  .btn-whatsapp {
+    min-height: 48px;
+  }
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: anywhere;
+  }
+  .grid-bg {
+    background-size: 48px 48px;
+  }
+}
